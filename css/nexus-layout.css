@@ -1,0 +1,617 @@
+/* ==========================================================================
+   NEXUS OS — LAYOUT & NAVIGATION
+   High Information Density & 1280x800 Kiosk Ergonomics
+   ========================================================================== */
+
+/* 1. TOP SYSTEM BAR */
+.system-bar {
+  height: var(--header-height);
+  min-height: var(--header-height);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Brand Cluster (Left) */
+.sys-brand-cluster {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sys-logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.sys-logo {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 0 6px var(--accent-primary));
+}
+
+.sys-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.sys-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: 0.12em;
+  color: var(--text-highlight);
+  line-height: 1.1;
+}
+
+.sys-name-tag {
+  color: var(--accent-primary);
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
+.sys-version {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+/* Network Status Indicator */
+.sys-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: var(--radius-sm);
+}
+
+.status-pulse-dot {
+  width: 7px;
+  height: 7px;
+  background-color: var(--status-up);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--status-up);
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.status-text {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--status-up);
+}
+
+/* Offline state for status badge */
+.sys-status-badge.offline {
+  background: rgba(244, 63, 94, 0.1);
+  border-color: rgba(244, 63, 94, 0.3);
+}
+.sys-status-badge.offline .status-pulse-dot {
+  background-color: var(--status-down);
+  box-shadow: 0 0 8px var(--status-down);
+  animation: none;
+}
+.sys-status-badge.offline .status-text {
+  color: var(--status-down);
+}
+
+/* Center Clock Cluster */
+.sys-clock-cluster {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 2px 14px;
+  border-radius: var(--radius-md);
+  transition: background var(--trans-fast);
+}
+
+.sys-clock-cluster:hover, .sys-clock-cluster:active {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sys-clock-digits {
+  font-family: var(--font-mono);
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--text-highlight);
+  line-height: 1;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: baseline;
+}
+
+.clock-colon {
+  opacity: 0.9;
+  animation: blink-colon 1s step-start infinite;
+  color: var(--accent-primary);
+}
+
+@keyframes blink-colon {
+  50% { opacity: 0.2; }
+}
+
+.clock-secs {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+.clock-ampm {
+  font-size: 0.75rem;
+  margin-left: 6px;
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.sys-date-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 3px;
+}
+
+.sys-day {
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.sys-date-sep {
+  opacity: 0.4;
+}
+
+/* Actions Cluster (Right) */
+.sys-actions-cluster {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Glasgow Quick Weather Pill */
+.header-weather-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+
+.header-weather-pill:hover, .header-weather-pill:active {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-accent);
+}
+
+.hw-icon {
+  font-size: 1.3rem;
+}
+
+.hw-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.hw-temp {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-highlight);
+  line-height: 1.1;
+}
+
+.hw-cond {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.sys-sync-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.sync-icon {
+  font-size: 0.85rem;
+}
+
+.sys-control-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sys-btn {
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+
+.sys-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.sys-btn:hover, .sys-btn:active {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.btn-demo-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.sys-btn.demo-active {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: var(--status-warn);
+  color: var(--status-warn);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+/* 2. LIVE TICKER STRIP */
+.live-ticker-strip {
+  height: var(--ticker-height);
+  min-height: var(--ticker-height);
+  background: #090d14;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+  z-index: 9;
+}
+
+.ticker-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 100%;
+  background: rgba(0, 240, 255, 0.08);
+  border-right: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--accent-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ticker-live-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--accent-primary);
+}
+
+.ticker-track-container {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding-left: 14px;
+  white-space: nowrap;
+  animation: ticker-scroll 45s linear infinite;
+  will-change: transform;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.ti-sym {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.ti-val {
+  color: var(--text-highlight);
+  font-weight: 700;
+}
+
+.ti-chg {
+  font-weight: 700;
+}
+
+.ticker-disclaimer {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  .ticker-disclaimer {
+    display: block;
+    padding: 0 12px;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+    border-left: 1px solid var(--border-subtle);
+  }
+}
+
+/* 3. MAIN CONTENT CONTAINER (VIEWPORT) */
+.nexus-main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  padding: 12px 14px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* View Panels */
+.view-panel {
+  display: none;
+  width: 100%;
+  animation: fadeInView 0.2s ease-out forwards;
+}
+
+.view-panel.active {
+  display: block;
+}
+
+@keyframes fadeInView {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Page Headers for Sub-Views */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.ph-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-highlight);
+}
+
+.nav-back-btn {
+  padding: 8px 14px;
+  min-height: var(--touch-target-min);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--accent-primary);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: all var(--trans-fast);
+}
+
+.nav-back-btn:hover, .nav-back-btn:active {
+  background: var(--accent-glow-subtle);
+  border-color: var(--accent-primary);
+}
+
+/* 4. OVERVIEW WIDGETS GRID (Optimized for 1280x800) */
+.widgets-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px;
+  padding-bottom: 10px;
+}
+
+/* Grid Spanning for 1280x800 landscape */
+.widget-weather {
+  grid-column: span 4;
+}
+
+.widget-crypto {
+  grid-column: span 4;
+}
+
+.widget-markets {
+  grid-column: span 4;
+}
+
+.widget-fx {
+  grid-column: span 4;
+}
+
+.widget-world {
+  grid-column: span 4;
+}
+
+.widget-news {
+  grid-column: span 4;
+}
+
+.widget-tools {
+  grid-column: span 12;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .widget-weather, .widget-crypto, .widget-markets, .widget-fx, .widget-world, .widget-news {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 768px) {
+  .widgets-grid {
+    grid-template-columns: 1fr;
+  }
+  .widget-card {
+    grid-column: span 1 !important;
+  }
+  .system-bar {
+    padding: 0 10px;
+  }
+  .sys-clock-digits {
+    font-size: 1.35rem;
+  }
+  .header-weather-pill {
+    display: none;
+  }
+}
+
+/* 5. PERSISTENT SYSTEM DOCK (BOTTOM NAVIGATION) */
+.system-dock {
+  height: var(--dock-height);
+  min-height: var(--dock-height);
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.45);
+}
+
+.dock-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 1000px;
+  gap: 6px;
+}
+
+.dock-item {
+  flex: 1;
+  max-width: 130px;
+  height: 52px;
+  min-height: var(--touch-target-min);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+  position: relative;
+}
+
+.dock-icon svg {
+  width: 22px;
+  height: 22px;
+  transition: transform var(--trans-fast);
+}
+
+.dock-label {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  transition: color var(--trans-fast);
+}
+
+.dock-item:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dock-item:active {
+  transform: scale(0.96);
+}
+
+.dock-item.active {
+  color: var(--accent-primary);
+  background: var(--accent-glow-subtle);
+  border-color: var(--border-accent);
+  box-shadow: 0 0 12px var(--accent-glow-subtle);
+}
+
+.dock-item.active .dock-icon svg {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 0 6px var(--accent-primary));
+}
+
+.dock-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  width: 24px;
+  height: 2px;
+  background: var(--accent-primary);
+  border-radius: 2px;
+  box-shadow: 0 0 6px var(--accent-primary);
+}

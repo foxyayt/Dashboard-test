@@ -1,0 +1,116 @@
+/* ==========================================================================
+   NEXUS OS — THEMES ENGINE
+   Futuristic Color Systems with Hardware-Accelerated Rendering
+   ========================================================================== */
+
+/* 1. Theme: Obsidian (Default Cyber) */
+body.theme-obsidian {
+  --bg-deep: #07090e;
+  --bg-surface: #0e121a;
+  --bg-card: rgba(18, 24, 38, 0.90);
+  --bg-card-hover: rgba(26, 34, 52, 0.95);
+  --bg-card-inner: rgba(10, 14, 22, 0.75);
+  --accent-primary: #00f0ff;
+  --accent-glow: rgba(0, 240, 255, 0.4);
+  --accent-glow-subtle: rgba(0, 240, 255, 0.12);
+  --accent-secondary: #7928ca;
+}
+
+/* 2. Theme: Midnight Blue */
+body.theme-midnight {
+  --bg-deep: #060913;
+  --bg-surface: #0b1124;
+  --bg-card: rgba(15, 23, 42, 0.92);
+  --bg-card-hover: rgba(23, 37, 84, 0.95);
+  --bg-card-inner: rgba(8, 14, 30, 0.8);
+  --accent-primary: #38bdf8;
+  --accent-glow: rgba(56, 189, 248, 0.4);
+  --accent-glow-subtle: rgba(56, 189, 248, 0.12);
+  --accent-secondary: #6366f1;
+}
+
+/* 3. Theme: Matrix Emerald */
+body.theme-emerald {
+  --bg-deep: #02120a;
+  --bg-surface: #051e12;
+  --bg-card: rgba(6, 35, 22, 0.90);
+  --bg-card-hover: rgba(10, 50, 32, 0.95);
+  --bg-card-inner: rgba(3, 20, 12, 0.8);
+  --accent-primary: #10b981;
+  --accent-glow: rgba(16, 185, 129, 0.45);
+  --accent-glow-subtle: rgba(16, 185, 129, 0.14);
+  --accent-secondary: #059669;
+}
+
+/* 4. Theme: Solar Amber */
+body.theme-amber {
+  --bg-deep: #120902;
+  --bg-surface: #1c1005;
+  --bg-card: rgba(36, 20, 7, 0.90);
+  --bg-card-hover: rgba(50, 28, 10, 0.95);
+  --bg-card-inner: rgba(18, 10, 3, 0.8);
+  --accent-primary: #f59e0b;
+  --accent-glow: rgba(245, 158, 11, 0.45);
+  --accent-glow-subtle: rgba(245, 158, 11, 0.14);
+  --accent-secondary: #d97706;
+}
+
+/* 5. Theme: Crimson Protocol */
+body.theme-crimson {
+  --bg-deep: #120306;
+  --bg-surface: #1e070c;
+  --bg-card: rgba(38, 10, 18, 0.90);
+  --bg-card-hover: rgba(54, 15, 26, 0.95);
+  --bg-card-inner: rgba(20, 4, 9, 0.8);
+  --accent-primary: #f43f5e;
+  --accent-glow: rgba(244, 63, 94, 0.45);
+  --accent-glow-subtle: rgba(244, 63, 94, 0.14);
+  --accent-secondary: #be123c;
+}
+
+/* 6. Theme: Titanium Light (High Contrast Day Mode) */
+body.theme-titanium {
+  --bg-deep: #e2e8f0;
+  --bg-surface: #cbd5e1;
+  --bg-card: rgba(255, 255, 255, 0.94);
+  --bg-card-hover: rgba(248, 250, 252, 0.98);
+  --bg-card-inner: rgba(241, 245, 249, 0.9);
+  --bg-translucent: rgba(226, 232, 240, 0.85);
+
+  --accent-primary: #0284c7;
+  --accent-glow: rgba(2, 132, 199, 0.35);
+  --accent-glow-subtle: rgba(2, 132, 199, 0.15);
+  --accent-secondary: #4f46e5;
+
+  --text-main: #0f172a;
+  --text-muted: #334155;
+  --text-dim: #64748b;
+  --text-highlight: #020617;
+
+  --border-subtle: rgba(0, 0, 0, 0.10);
+  --border-accent: rgba(2, 132, 199, 0.45);
+  --border-strong: rgba(0, 0, 0, 0.20);
+  --shadow-card: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+body.theme-titanium .ambient-grid {
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+}
+
+body.theme-titanium .live-ticker-strip {
+  background: #cbd5e1;
+}
+
+body.theme-titanium .system-dock {
+  background: #cbd5e1;
+}
+
+body.theme-titanium .btn-primary {
+  color: #fff;
+}
+
+body.theme-titanium .curr-btn.active {
+  color: #fff;
+}

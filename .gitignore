@@ -1,0 +1,14 @@
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE Files
+.vscode/
+.idea/
+
+# Node
+node_modules/
+package-lock.json
+
+# Scratch
+*.log

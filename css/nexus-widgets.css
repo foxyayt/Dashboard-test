@@ -1,0 +1,1986 @@
+/* ==========================================================================
+   NEXUS OS — WIDGETS & COMPONENTS
+   Glassmorphic panels, charts, touch controls, and high-density information
+   ========================================================================== */
+
+/* 1. MASTER WIDGET CARD */
+.widget-card, .section-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  transition: border-color var(--trans-normal), box-shadow var(--trans-normal);
+}
+
+.widget-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+/* Glowing Top Accent Line on Cards */
+.widget-card::before, .section-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+  opacity: 0.35;
+}
+
+/* Widget Header */
+.widget-header, .sec-head {
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+}
+
+.wh-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wh-icon {
+  font-size: 1.25rem;
+}
+
+.wh-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.wh-title, .sec-head h3 {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-highlight);
+  text-transform: uppercase;
+}
+
+.wh-subtitle, .sec-meta {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+}
+
+.wh-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Badges */
+.wh-badge {
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.wh-badge.live-badge {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid var(--status-up);
+  color: var(--status-up);
+}
+
+.wh-badge.delayed-badge {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid var(--status-warn);
+  color: var(--status-warn);
+}
+
+.wh-badge.ref-badge {
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid var(--status-info);
+  color: var(--status-info);
+}
+
+.wh-btn {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  transition: all var(--trans-fast);
+}
+
+.wh-btn:hover, .wh-btn:active {
+  background: var(--accent-glow-subtle);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+/* Widget Body */
+.widget-body {
+  padding: 12px 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   2. WEATHER WIDGET (OVERVIEW & FULL VIEW)
+   ========================================================================== */
+.weather-current-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.wc-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.wc-temp {
+  font-family: var(--font-mono);
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-highlight);
+  line-height: 1;
+}
+
+.wc-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wc-condition {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.wc-feels {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.wc-range {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent-primary);
+}
+
+.wc-icon-large {
+  font-size: 3rem;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.2));
+}
+
+.weather-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.w-metric-pill {
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.m-icon {
+  font-size: 0.9rem;
+}
+
+.m-label {
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+}
+
+.m-val {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-highlight);
+}
+
+.weather-hourly-strip {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 10px;
+}
+
+.hourly-strip-title {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.hourly-cards-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.hourly-mini-col {
+  flex: 0 0 54px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.hmc-time {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--text-muted);
+}
+
+.hmc-icon {
+  font-size: 1rem;
+}
+
+.hmc-temp {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-highlight);
+}
+
+.hmc-rain {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: #38bdf8;
+}
+
+/* Full Weather Centre Layout */
+.weather-full-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.weather-hero-banner {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.4) 0%, rgba(15, 23, 42, 0.85) 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.whb-main {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.whb-icon {
+  font-size: 4rem;
+}
+
+.whb-temp {
+  font-family: var(--font-mono);
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--text-highlight);
+  line-height: 1;
+  display: block;
+}
+
+.whb-condition {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  display: block;
+}
+
+.whb-location {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent-primary);
+  display: block;
+  margin-top: 2px;
+}
+
+.whb-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  flex: 1;
+  max-width: 650px;
+}
+
+.whb-metric {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.whb-m-lbl {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.whb-m-val {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-highlight);
+}
+
+.whb-m-val.highlight {
+  color: var(--status-up);
+}
+
+.weather-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.weather-search-bar input {
+  padding: 8px 12px;
+  min-height: var(--touch-target-min);
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-highlight);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  width: 250px;
+}
+
+.weather-chart-wrap {
+  padding: 12px;
+  width: 100%;
+}
+
+.weather-chart-wrap canvas {
+  width: 100%;
+  height: 200px;
+}
+
+.seven-day-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  padding: 12px;
+}
+
+.seven-day-col {
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.sdc-day {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+.sdc-icon {
+  font-size: 1.5rem;
+}
+
+.sdc-temp-max {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-highlight);
+}
+
+.sdc-temp-min {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+/* ==========================================================================
+   3. CRYPTO & FINANCIAL MARKETS WIDGETS
+   ========================================================================== */
+.crypto-currency-selector {
+  display: flex;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  border: 1px solid var(--border-subtle);
+}
+
+.curr-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.curr-btn.active {
+  background: var(--accent-primary);
+  color: #000;
+}
+
+.crypto-asset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.crypto-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  transition: all var(--trans-fast);
+}
+
+.crypto-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.c-asset-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 90px;
+}
+
+.c-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.65rem;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.c-sym {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--text-highlight);
+}
+
+.c-sparkline {
+  width: 70px;
+  height: 24px;
+}
+
+.c-price-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.c-price {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.84rem;
+  color: var(--text-highlight);
+}
+
+.c-chg {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* Stock Indices & Equities */
+.indices-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.idx-box {
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+}
+
+.idx-name {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.idx-val {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-highlight);
+}
+
+.idx-chg {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.equities-watchlist {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eq-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.eq-sym-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 75px;
+}
+
+.eq-sym {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text-highlight);
+}
+
+.eq-name {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+}
+
+.eq-chart-spark {
+  width: 70px;
+  height: 22px;
+}
+
+.eq-price-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.eq-price {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-highlight);
+}
+
+.eq-chg {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+/* Full Markets View Layout */
+.markets-full-layout {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.markets-column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.nexus-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.nexus-table th {
+  padding: 8px 10px;
+  text-align: left;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.nexus-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--text-main);
+}
+
+.watchlist-add-form {
+  display: flex;
+  gap: 6px;
+}
+
+.watchlist-add-form input {
+  padding: 4px 8px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-highlight);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  width: 110px;
+}
+
+.interactive-chart-container {
+  padding: 10px;
+  position: relative;
+}
+
+.interactive-chart-container canvas {
+  width: 100%;
+  height: 220px;
+}
+
+/* ==========================================================================
+   4. FX RATES & CURRENCY CONVERTER
+   ========================================================================== */
+.fx-rates-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.fx-rate-card {
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+}
+
+.fx-pair {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.fx-rate {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-highlight);
+}
+
+.fx-sub {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+}
+
+.fx-quick-converter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.fqc-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fqc-curr-label {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  color: var(--accent-primary);
+}
+
+.fqc-input {
+  width: 75px;
+  padding: 4px 6px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-highlight);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.fqc-arrow {
+  color: var(--text-dim);
+  font-weight: 800;
+}
+
+.fqc-result-wrap {
+  display: flex;
+  gap: 8px;
+}
+
+.fqc-out-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-highlight);
+}
+
+/* ==========================================================================
+   5. SEISMIC RADAR & ORBITAL ISS
+   ========================================================================== */
+.iss-radar-card {
+  background: rgba(0, 240, 255, 0.05);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  margin-bottom: 10px;
+}
+
+.iss-status-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.iss-beacon {
+  width: 7px;
+  height: 7px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent-primary);
+  animation: pulse-dot 1.5s infinite;
+}
+
+.iss-title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-main);
+}
+
+.iss-alt {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--accent-primary);
+}
+
+.iss-coords-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.earthquake-quick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.eqk-title-bar {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.eqk-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.eqk-mag {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.78rem;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: rgba(244, 63, 94, 0.2);
+  color: var(--status-down);
+}
+
+.eqk-place {
+  font-size: 0.72rem;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+.eqk-time {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+}
+
+/* World Clocks View */
+.world-clocks-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  padding: 12px;
+}
+
+.wc-city-card {
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.wcc-name {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.wcc-time {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-highlight);
+  margin: 4px 0;
+}
+
+.wcc-offset {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--accent-primary);
+}
+
+.world-split-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 14px;
+}
+
+/* Lunar Card */
+.lunar-card-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px;
+}
+
+.moon-render-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.35);
+}
+
+.moon-phase-shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(10, 14, 22, 0.92);
+}
+
+.lunar-info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lunar-phase-name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-highlight);
+}
+
+.lunar-metric {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   6. LIVE NEWS WIRE
+   ========================================================================== */
+.news-category-pills {
+  display: flex;
+  gap: 4px;
+}
+
+.n-pill {
+  padding: 2px 7px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.n-pill.active {
+  background: var(--accent-glow-subtle);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.news-scroll-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.news-item {
+  padding: 8px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+
+.news-item:hover, .news-item:active {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--border-accent);
+}
+
+.ni-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+
+.ni-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-dim);
+}
+
+/* ==========================================================================
+   7. INTERACTIVE UTILITIES (TOOLS)
+   ========================================================================== */
+.tools-subtab-bar {
+  display: flex;
+  gap: 6px;
+}
+
+.t-tab {
+  padding: 6px 12px;
+  min-height: var(--touch-target-min);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+
+.t-tab.active {
+  background: var(--accent-glow-subtle);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.tool-content-pane {
+  display: none;
+}
+
+.tool-content-pane.active {
+  display: block;
+  animation: fadeInView 0.2s ease-out;
+}
+
+/* Touch Calculator */
+.calculator-container {
+  max-width: 380px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.calc-screen {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  text-align: right;
+  margin-bottom: 14px;
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.calc-history {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  min-height: 16px;
+}
+
+.calc-current {
+  font-family: var(--font-mono);
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text-highlight);
+  word-break: break-all;
+}
+
+.calc-pad {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.c-key {
+  height: 52px;
+  min-height: var(--touch-target-min);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-highlight);
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--trans-fast);
+}
+
+.c-key:active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.c-key.action {
+  background: rgba(0, 240, 255, 0.12);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.c-key.equals {
+  background: var(--accent-primary);
+  color: #000;
+  font-weight: 800;
+}
+
+/* Timers & Stopwatch */
+.timers-triple-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.timer-card {
+  align-items: center;
+  text-align: center;
+  padding-bottom: 16px;
+}
+
+.pomo-big-clock, .stopwatch-digits, .countdown-digits {
+  font-family: var(--font-mono);
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--text-highlight);
+  margin: 16px 0 8px;
+  letter-spacing: 0.04em;
+}
+
+.pomo-state-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  margin-bottom: 14px;
+}
+
+.timer-btn-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.cd-preset-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.cd-preset-btn {
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.cd-preset-btn.active {
+  background: var(--accent-glow-subtle);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.sw-laps-box {
+  margin-top: 12px;
+  max-height: 110px;
+  overflow-y: auto;
+  width: 90%;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Finance Calculations */
+.finance-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.calc-form {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.form-group input, .form-group select {
+  padding: 8px 10px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-highlight);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.calc-result-box {
+  margin-top: 8px;
+  background: rgba(0, 240, 255, 0.06);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  text-align: center;
+}
+
+.crb-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.crb-value {
+  font-family: var(--font-mono);
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--text-highlight);
+  margin: 4px 0;
+}
+
+.crb-sub {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* To-Do List & Scratchpad */
+.notes-tasks-split {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.todo-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.todo-input-row input {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-highlight);
+  font-size: 0.85rem;
+}
+
+.todo-items-list {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.todo-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.todo-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.todo-item-text.done {
+  text-decoration: line-through;
+  color: var(--text-dim);
+}
+
+.todo-del-btn {
+  background: transparent;
+  border: none;
+  color: var(--status-down);
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.notes-full-area {
+  width: 100%;
+  height: 280px;
+  background: transparent;
+  border: none;
+  padding: 14px;
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  resize: none;
+  outline: none;
+}
+
+/* Mini Scratchpad in Overview */
+.mini-scratchpad-panel {
+  margin-top: 10px;
+}
+
+.scratchpad-header {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.scratchpad-textarea {
+  width: 100%;
+  height: 60px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  resize: none;
+  outline: none;
+}
+
+.mini-pomodoro-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.pomo-display {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.pomo-time {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-highlight);
+}
+
+.pomo-status {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.pomo-btn {
+  padding: 6px 14px;
+  min-height: 38px;
+  background: var(--accent-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #000;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.pomo-btn.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+}
+
+/* QR Code Generator */
+.qr-card {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.qr-form {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.qr-presets {
+  display: flex;
+  gap: 8px;
+}
+
+.qr-quick-btn {
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.qr-display-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.4);
+  border-top: 1px solid var(--border-subtle);
+}
+
+#qr-svg-wrapper {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.qr-meta-sub {
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+/* ==========================================================================
+   8. SMART HOME & CAMERAS
+   ========================================================================== */
+.arch-notice-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-bottom: 14px;
+}
+
+.anb-icon {
+  font-size: 1.8rem;
+}
+
+.anb-text h4 {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #60a5fa;
+  margin-bottom: 4px;
+}
+
+.anb-text p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.home-widgets-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.camera-card {
+  overflow: hidden;
+}
+
+.cam-live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--status-warn);
+  font-weight: 700;
+}
+
+.cam-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--status-warn);
+}
+
+.camera-stream-wrapper {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cam-overlay {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.75);
+  z-index: 2;
+}
+
+.cam-feed-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.cam-feed-placeholder span {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.cam-feed-placeholder small {
+  font-size: 0.65rem;
+}
+
+.thermostat-widget {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.thermo-dial {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.thermo-cur-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+}
+
+.thermo-cur-temp {
+  font-family: var(--font-mono);
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--text-highlight);
+}
+
+.thermo-mode {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--status-up);
+  font-weight: 700;
+}
+
+.thermo-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.thermo-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-highlight);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.thermo-target-val {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent-primary);
+}
+
+.switches-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 14px;
+}
+
+.switch-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.sw-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.sw-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.sw-state {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+}
+
+/* Toggle Switch */
+.nexus-toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.nexus-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.15);
+  transition: .3s;
+  border-radius: 24px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: var(--accent-primary);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+}
+
+/* ==========================================================================
+   9. SETTINGS & CUSTOMISATION ENGINE
+   ========================================================================== */
+.settings-full-layout {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.settings-group {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.set-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.theme-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.theme-card-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+
+.theme-card-btn.active {
+  border-color: var(--accent-primary);
+  background: var(--accent-glow-subtle);
+}
+
+.th-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.swatch-obsidian { background: #07090e; }
+.swatch-midnight { background: #0f172a; }
+.swatch-emerald { background: #022c22; }
+.swatch-amber { background: #451a03; }
+.swatch-crimson { background: #450a0a; }
+.swatch-titanium { background: #e2e8f0; }
+
+.th-name {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.accent-color-row {
+  display: flex;
+  gap: 10px;
+}
+
+.accent-dot-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform var(--trans-fast);
+}
+
+.accent-dot-btn.active {
+  transform: scale(1.15);
+  border-color: #fff;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.density-selector {
+  display: flex;
+  gap: 8px;
+}
+
+.dens-btn {
+  flex: 1;
+  padding: 8px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dens-btn.active {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: var(--accent-glow-subtle);
+}
+
+.widget-reorder-list {
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.w-manage-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: var(--bg-card-inner);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.wm-name {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-highlight);
+}
+
+.wm-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wm-arrow-btn {
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-grid-cols {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 14px;
+}
+
+.diag-split {
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.diag-info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.diag-info-box strong {
+  color: var(--text-highlight);
+}
+
+.backup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Standard Buttons */
+.btn-primary, .btn-primary-mini {
+  background: var(--accent-primary);
+  color: #000;
+  border: none;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+
+.btn-primary {
+  padding: 10px 18px;
+  min-height: var(--touch-target-min);
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+}
+
+.btn-primary-mini {
+  padding: 6px 12px;
+  min-height: 36px;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+}
+
+.btn-primary:active, .btn-primary-mini:active {
+  transform: scale(0.96);
+}
+
+.btn-secondary, .btn-secondary-mini {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-highlight);
+  border: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  padding: 10px 18px;
+  min-height: var(--touch-target-min);
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+}
+
+.btn-secondary-mini {
+  padding: 6px 12px;
+  min-height: 36px;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+}
+
+.btn-danger-mini {
+  padding: 6px 12px;
+  min-height: 36px;
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid var(--status-down);
+  color: var(--status-down);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}

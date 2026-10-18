@@ -1,0 +1,190 @@
+/* ==========================================================================
+   NEXUS OS — CORE DESIGN TOKENS & RESET
+   Optimized for 1280x800 Touch Displays (Rockchip RK3326 / Android 8.1)
+   ========================================================================== */
+
+:root {
+  /* Color Palette — Cyber Obsidian Default */
+  --bg-deep: #07090e;
+  --bg-surface: #0e121a;
+  --bg-card: rgba(18, 24, 38, 0.88);
+  --bg-card-hover: rgba(26, 34, 52, 0.95);
+  --bg-card-inner: rgba(10, 14, 22, 0.7);
+  --bg-translucent: rgba(14, 18, 26, 0.75);
+
+  /* Primary Accent: Electric Cyan */
+  --accent-primary: #00f0ff;
+  --accent-glow: rgba(0, 240, 255, 0.4);
+  --accent-glow-subtle: rgba(0, 240, 255, 0.12);
+  --accent-secondary: #7928ca;
+
+  /* Status Colors */
+  --status-up: #10b981;
+  --status-up-glow: rgba(16, 185, 129, 0.25);
+  --status-down: #f43f5e;
+  --status-down-glow: rgba(244, 63, 94, 0.25);
+  --status-warn: #f59e0b;
+  --status-info: #3b82f6;
+
+  /* Text & Typography */
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --text-highlight: #ffffff;
+
+  /* Borders & Dividers */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-accent: rgba(0, 240, 255, 0.35);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  /* Radii & Shadows */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 15px var(--accent-glow-subtle);
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", "Roboto Mono", "Cascadia Code", Consolas, monospace;
+  --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Touch sizing */
+  --touch-target-min: 44px;
+  --header-height: 64px;
+  --ticker-height: 32px;
+  --dock-height: 68px;
+
+  /* Transitions */
+  --trans-fast: 0.15s ease-out;
+  --trans-normal: 0.25s ease-out;
+}
+
+/* Base Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-deep);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.4;
+  touch-action: manipulation;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Text selections enabled only in specific inputs */
+input, textarea, [contenteditable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* Subtle Background Ambient Orbs (GPU accelerated via transform) */
+.ambient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.18;
+  filter: blur(60px);
+  will-change: transform;
+}
+
+.ambient-orb.orb-1 {
+  width: 450px;
+  height: 450px;
+  top: -100px;
+  left: -80px;
+  background: radial-gradient(circle, var(--accent-primary) 0%, transparent 70%);
+}
+
+.ambient-orb.orb-2 {
+  width: 500px;
+  height: 500px;
+  bottom: -120px;
+  right: -100px;
+  background: radial-gradient(circle, var(--accent-secondary) 0%, transparent 70%);
+}
+
+.ambient-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.5;
+}
+
+/* Master Application Shell */
+.nexus-app {
+  position: relative;
+  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Utility Helper Classes */
+.hidden {
+  display: none !important;
+}
+
+.up {
+  color: var(--status-up) !important;
+}
+
+.down {
+  color: var(--status-down) !important;
+}
+
+/* Scrollbars for touch overflow */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
+
+/* Density Variants */
+body.density-compact {
+  --header-height: 54px;
+  --dock-height: 56px;
+  font-size: 13px;
+}
+
+body.density-comfortable {
+  --header-height: 72px;
+  --dock-height: 76px;
+  font-size: 15px;
+}

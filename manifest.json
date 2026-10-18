@@ -1,0 +1,17 @@
+{
+  "name": "NEXUS OS — Live Touch Dashboard",
+  "short_name": "NEXUS OS",
+  "description": "High-density futuristic operating system dashboard for 10.1\" touchscreen devices",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#07090e",
+  "theme_color": "#07090e",
+  "icons": [
+    {
+      "src": "./assets/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

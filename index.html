@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>NEXUS OS — Live Touch Dashboard</title>
+
+  <!-- PWA & Mobile Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#07090e">
+  <link rel="manifest" href="./manifest.json">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="./css/nexus-core.css">
+  <link rel="stylesheet" href="./css/nexus-layout.css">
+  <link rel="stylesheet" href="./css/nexus-widgets.css">
+  <link rel="stylesheet" href="./css/nexus-themes.css">
+  <link rel="stylesheet" href="./css/nexus-modal.css">
+
+  <!-- Favicon SVG -->
+  <link rel="icon" type="image/svg+xml" href="./assets/logo.svg">
+</head>
+<body class="theme-obsidian density-kiosk" data-active-view="overview">
+  <!-- Subtle Background Ambient Glow (GPU-friendly, no heavy blur) -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-grid"></div>
+  </div>
+
+  <!-- Main Application Wrapper -->
+  <div id="nexus-app" class="nexus-app">
+    
+    <!-- TOP SYSTEM BAR -->
+    <header class="system-bar" id="system-bar">
+      <!-- Left: Brand & Status -->
+      <div class="sys-brand-cluster">
+        <div class="sys-logo-wrapper" id="brand-logo-btn" title="NEXUS OS">
+          <svg class="sys-logo" viewBox="0 0 32 32" fill="none">
+            <polygon points="16,2 30,10 30,22 16,30 2,22 2,10" stroke="var(--accent-primary)" stroke-width="2" fill="var(--accent-glow-subtle)"/>
+            <circle cx="16" cy="16" r="5" fill="var(--accent-primary)"/>
+            <line x1="16" y1="2" x2="16" y2="11" stroke="var(--accent-primary)" stroke-width="1.5"/>
+            <line x1="16" y1="21" x2="16" y2="30" stroke="var(--accent-primary)" stroke-width="1.5"/>
+            <line x1="2" y1="10" x2="11" y2="16" stroke="var(--accent-primary)" stroke-width="1.5"/>
+            <line x1="21" y1="16" x2="30" y2="22" stroke="var(--accent-primary)" stroke-width="1.5"/>
+          </svg>
+          <div class="sys-titles">
+            <span class="sys-name">NEXUS <span class="sys-name-tag">OS</span></span>
+            <span class="sys-version">v2.4 PRO</span>
+          </div>
+        </div>
+
+        <div class="sys-status-badge" id="net-status-badge" title="Network Heartbeat">
+          <span class="status-pulse-dot" id="net-status-dot"></span>
+          <span class="status-text" id="net-status-text">ONLINE</span>
+        </div>
+      </div>
+
+      <!-- Center: Massive Digital Clock & Full Date -->
+      <div class="sys-clock-cluster" id="header-clock-trigger" role="button" tabindex="0" title="Tap for Time & World Clocks">
+        <div class="sys-clock-digits" id="sys-clock-time">
+          <span class="clock-hrs" id="clock-hrs">00</span><span class="clock-colon">:</span><span class="clock-mins" id="clock-mins">00</span><span class="clock-secs" id="clock-secs">:00</span>
+          <span class="clock-ampm" id="clock-ampm"></span>
+        </div>
+        <div class="sys-date-row">
+          <span class="sys-day" id="clock-day">FRIDAY</span>
+          <span class="sys-date-sep">•</span>
+          <span class="sys-date" id="clock-date">17 OCT 2026</span>
+          <span class="sys-date-sep">•</span>
+          <span class="sys-tz" id="clock-tz">GLASGOW (BST)</span>
+        </div>
+      </div>
+
+      <!-- Right: Quick Weather Pill, Actions & Settings -->
+      <div class="sys-actions-cluster">
+        <!-- Glasgow Quick Weather Pill -->
+        <div class="header-weather-pill" id="header-weather-pill" role="button" tabindex="0" title="Tap for Glasgow Weather Centre">
+          <span class="hw-icon" id="hw-icon">⛅</span>
+          <div class="hw-info">
+            <span class="hw-temp" id="hw-temp">--°C</span>
+            <span class="hw-cond" id="hw-cond">Glasgow</span>
+          </div>
+        </div>
+
+        <!-- Last Refreshed Indicator -->
+        <div class="sys-sync-info" id="sys-sync-info" title="Last data sync">
+          <span class="sync-icon">↺</span>
+          <span class="sync-time" id="last-sync-time">Just now</span>
+        </div>
+
+        <!-- Global Action Buttons -->
+        <div class="sys-control-btns">
+          <button class="sys-btn" id="btn-manual-refresh" title="Refresh Live Data" aria-label="Refresh Data">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"/>
+            </svg>
+          </button>
+          <button class="sys-btn" id="btn-demo-mode" title="Toggle Demo Data Mode" aria-label="Demo Mode">
+            <span class="btn-demo-label">DEMO</span>
+          </button>
+          <button class="sys-btn" id="btn-fullscreen" title="Toggle Kiosk Fullscreen" aria-label="Fullscreen">
+            <svg id="fs-enter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            </svg>
+            <svg id="fs-exit-icon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>
+            </svg>
+          </button>
+          <button class="sys-btn" id="btn-quick-settings" title="Settings" aria-label="Settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- LIVE GLOBAL TICKER TAPE -->
+    <section class="live-ticker-strip" id="live-ticker-strip" aria-label="Live Market Quotes">
+      <div class="ticker-label">
+        <span class="ticker-live-dot"></span> LIVE FEED
+      </div>
+      <div class="ticker-track-container" id="ticker-track-container">
+        <div class="ticker-track" id="ticker-track">
+          <!-- Populated dynamically by market & crypto engine -->
+          <div class="ticker-item"><span class="ti-sym">FTSE 100</span> <span class="ti-val">8,245.20</span> <span class="ti-chg up">+0.42%</span></div>
+          <div class="ticker-item"><span class="ti-sym">S&P 500</span> <span class="ti-val">5,864.67</span> <span class="ti-chg up">+0.38%</span></div>
+          <div class="ticker-item"><span class="ti-sym">NASDAQ</span> <span class="ti-val">18,371.90</span> <span class="ti-chg up">+0.63%</span></div>
+          <div class="ticker-item"><span class="ti-sym">BTC/GBP</span> <span class="ti-val">£52,430</span> <span class="ti-chg up">+1.85%</span></div>
+          <div class="ticker-item"><span class="ti-sym">ETH/GBP</span> <span class="ti-val">£2,012</span> <span class="ti-chg down">-0.45%</span></div>
+          <div class="ticker-item"><span class="ti-sym">GBP/USD</span> <span class="ti-val">1.3042</span> <span class="ti-chg up">+0.14%</span></div>
+          <div class="ticker-item"><span class="ti-sym">EUR/USD</span> <span class="ti-val">1.0865</span> <span class="ti-chg down">-0.08%</span></div>
+          <div class="ticker-item"><span class="ti-sym">NVDA</span> <span class="ti-val">$138.25</span> <span class="ti-chg up">+2.15%</span></div>
+          <div class="ticker-item"><span class="ti-sym">TSLA</span> <span class="ti-val">$220.70</span> <span class="ti-chg down">-1.20%</span></div>
+          <div class="ticker-item"><span class="ti-sym">AAPL</span> <span class="ti-val">$235.00</span> <span class="ti-chg up">+0.75%</span></div>
+        </div>
+      </div>
+      <div class="ticker-disclaimer" title="Delayed or real-time public quotes">
+        DATA SOURCES: OPEN-METEO • FRANKFURTER • COINGECKO • USGS • TRADINGVIEW
+      </div>
+    </section>
+
+    <!-- MAIN VIEWPORT CONTENT (Pages) -->
+    <main class="nexus-main" id="nexus-main">
+
+      <!-- ============================================== -->
+      <!-- VIEW 1: OVERVIEW / DASHBOARD (Default Grid)     -->
+      <!-- ============================================== -->
+      <section class="view-panel active" id="view-overview" data-view="overview">
+        <div class="widgets-grid" id="dashboard-widgets-grid">
+          
+          <!-- WIDGET 1: WEATHER (GLASGOW DEFAULT) -->
+          <article class="widget-card widget-weather" id="widget-weather" data-widget-id="weather">
+            <div class="widget-header">
+              <div class="wh-left">
+                <span class="wh-icon">🌦️</span>
+                <div class="wh-title-group">
+                  <h3 class="wh-title">GLASGOW WEATHER</h3>
+                  <span class="wh-subtitle" id="w-location-sub">Scotland, UK • Open-Meteo</span>
+                </div>
+              </div>
+              <div class="wh-actions">
+                <span class="wh-badge live-badge">LIVE</span>
+                <button class="wh-btn expand-btn" data-target-view="weather" title="Open Full Weather Centre">↗</button>
+              </div>
+            </div>
+            <div class="widget-body widget-weather-body">
+              <div class="weather-current-hero">
+                <div class="wc-left">
+                  <span class="wc-temp" id="wc-temp">--°</span>
+                  <div class="wc-meta">
+                    <span class="wc-condition" id="wc-condition">Loading forecast...</span>
+                    <span class="wc-feels" id="wc-feels">Feels like: --°</span>
+                    <span class="wc-range" id="wc-range">H: --° • L: --°</span>
+                  </div>
+                </div>
+                <div class="wc-right">
+                  <div class="wc-icon-large" id="wc-weather-icon">☁️</div>
+                </div>
+              </div>
+
+              <!-- Quick Metrics Grid -->
+              <div class="weather-metrics-row">
+                <div class="w-metric-pill" title="Precipitation Probability">
+                  <span class="m-icon">💧</span>
+                  <span class="m-label">Rain</span>
+                  <span class="m-val" id="wm-rain">--%</span>
+                </div>
+                <div class="w-metric-pill" title="Wind Speed & Direction">
+                  <span class="m-icon">💨</span>
+                  <span class="m-label">Wind</span>
+                  <span class="m-val" id="wm-wind">-- mph</span>
+                </div>
+                <div class="w-metric-pill" title="Relative Humidity">
+                  <span class="m-icon">🌫️</span>
+                  <span class="m-label">Humidity</span>
+                  <span class="m-val" id="wm-humidity">--%</span>
+                </div>
+                <div class="w-metric-pill" title="Max UV Index">
+                  <span class="m-icon">☀️</span>
+                  <span class="m-label">UV Max</span>
+                  <span class="m-val" id="wm-uv">--</span>
+                </div>
+              </div>
+
+              <!-- Hourly Mini Sparkline / Timeline -->
+              <div class="weather-hourly-strip">
+                <div class="hourly-strip-title">24-HOUR FORECAST</div>
+                <div class="hourly-cards-scroll" id="weather-hourly-preview">
+                  <div class="hourly-loading">Fetching hourly weather...</div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- WIDGET 2: CRYPTOCURRENCY COMMAND -->
+          <article class="widget-card widget-crypto" id="widget-crypto" data-widget-id="crypto">
+            <div class="widget-header">
+              <div class="wh-left">
+                <span class="wh-icon">₿</span>
+                <div class="wh-title-group">
+                  <h3 class="wh-title">CRYPTO COMMAND</h3>
+                  <span class="wh-subtitle">CoinGecko / Kraken Real Tickers</span>
+                </div>
+              </div>
+              <div class="wh-actions">
+                <div class="crypto-currency-selector">
+                  <button class="curr-btn active" data-curr="gbp">GBP</button>
+                  <button class="curr-btn" data-curr="usd">USD</button>
+                  <button class="curr-btn" data-curr="eur">EUR</button>
+                </div>
+                <button class="wh-btn expand-btn" data-target-view="markets" title="View Full Markets">↗</button>
+              </div>
+            </div>
+            <div class="widget-body widget-crypto-body">
+              <div class="crypto-asset-list" id="crypto-overview-list">
+                <!-- Dynamically generated with BTC, ETH, SOL, XRP, DOGE, ADA -->
+                <div class="crypto-row-skeleton">Loading cryptocurrency prices...</div>
+              </div>
+            </div>
+          </article>
+
+          <!-- WIDGET 3: GLOBAL STOCK MARKET & INDICES -->
+          <article class="widget-card widget-markets" id="widget-markets" data-widget-id="markets">
+            <div class="widget-header">
+              <div class="wh-left">
+                <span class="wh-icon">📈</span>
+                <div class="wh-title-group">
+                  <h3 class="wh-title">STOCK INDICES & EQUITIES</h3>
+                  <span class="wh-subtitle">London & US Exchanges</span>
+                </div>
+              </div>
+              <div class="wh-actions">
+                <span class="wh-badge delayed-badge" title="Market quotes subject to exchange delays">DELAYED</span>
+                <button class="wh-btn expand-btn" data-target-view="markets" title="Open Full Terminal">↗</button>
+              </div>
+            </div>
+            <div class="widget-body widget-markets-body">
+              <!-- Indices Pills -->
+              <div class="indices-summary-grid" id="indices-summary-grid">
+                <div class="idx-box">
+                  <div class="idx-name">FTSE 100</div>
+                  <div class="idx-val" id="idx-ftse-val">8,245.20</div>
+                  <div class="idx-chg up" id="idx-ftse-chg">+34.80 (+0.42%)</div>
+                </div>
+                <div class="idx-box">
+                  <div class="idx-name">S&P 500</div>
+                  <div class="idx-val" id="idx-sp-val">5,864.67</div>
+                  <div class="idx-chg up" id="idx-sp-chg">+22.15 (+0.38%)</div>
+                </div>
+                <div class="idx-box">
+                  <div class="idx-name">NASDAQ</div>
+                  <div class="idx-val" id="idx-nasdaq-val">18,371.90</div>
+                  <div class="idx-chg up" id="idx-nasdaq-chg">+115.30 (+0.63%)</div>
+                </div>
+                <div class="idx-box">
+                  <div class="idx-name">DOW JONES</div>
+                  <div class="idx-val" id="idx-dow-val">43,275.91</div>
+                  <div class="idx-chg down" id="idx-dow-chg">-36.20 (-0.08%)</div>
+                </div>
+              </div>
+
+              <!-- Top Equities Watchlist -->
+              <div class="equities-watchlist" id="equities-watchlist">
+                <div class="eq-item">
+                  <div class="eq-sym-col">
+                    <span class="eq-sym">AAPL</span>
+                    <span class="eq-name">Apple Inc.</span>
+                  </div>
+                  <div class="eq-chart-spark" id="spark-aapl"></div>
+                  <div class="eq-price-col">
+                    <span class="eq-price">$235.00</span>
+                    <span class="eq-chg up">+0.75%</span>
+                  </div>
+                </div>
+                <div class="eq-item">
+                  <div class="eq-sym-col">
+                    <span class="eq-sym">NVDA</span>
+                    <span class="eq-name">NVIDIA Corp.</span>
+                  </div>
+                  <div class="eq-chart-spark" id="spark-nvda"></div>
+                  <div class="eq-price-col">
+                    <span class="eq-price">$138.25</span>
+                    <span class="eq-chg up">+2.15%</span>
+                  </div>
+                </div>
+                <div class="eq-item">
+                  <div class="eq-sym-col">
+                    <span class="eq-sym">TSLA</span>
+                    <span class="eq-name">Tesla Inc.</span>
+                  </div>
+                  <div class="eq-chart-spark" id="spark-tsla"></div>
+                  <div class="eq-price-col">
+                    <span class="eq-price">$220.70</span>
+                    <span class="eq-chg down">-1.20%</span>
+                  </div>
+                </div>
+                <div class="eq-item">
+                  <div class="eq-sym-col">
+                    <span class="eq-sym">MSFT</span>
+                    <span class="eq-name">Microsoft Corp.</span>
+                  </div>
+                  <div class="eq-chart-spark" id="spark-msft"></div>
+                  <div class="eq-price-col">
+                    <span class="eq-price">$418.15</span>
+                    <span class="eq-chg up">+0.45%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- WIDGET 4: FX & FRANKFURTER ECONOMICS -->
+          <article class="widget-card widget-fx" id="widget-fx" data-widget-id="fx">
+            <div class="widget-header">
+              <div class="wh-left">
+                <span class="wh-icon">💱</span>
+                <div class="wh-title-group">
+                  <h3 class="wh-title">CURRENCY & FX RATES</h3>
+                  <span class="wh-subtitle">European Central Bank • Frankfurter API</span>
+                </div>
+              </div>
+              <div class="wh-actions">
+                <span class="wh-badge ref-badge" title="Official Central Bank Daily Reference Rates">ECB REF</span>
+                <button class="wh-btn expand-btn" data-target-view="tools" title="Open Full FX Calculator">↗</button>
+              </div>
+            </div>
+            <div class="widget-body widget-fx-body">
+              <div class="fx-rates-grid" id="fx-rates-grid">
+                <div class="fx-rate-card">
+                  <div class="fx-pair">GBP / USD</div>
+                  <div class="fx-rate" id="fx-gbp-usd">1.3042</div>
+                  <div class="fx-sub">£1 = $1.3042</div>
+                </div>
+                <div class="fx-rate-card">
+                  <div class="fx-pair">GBP / EUR</div>
+                  <div class="fx-rate" id="fx-gbp-eur">1.2005</div>
+                  <div class="fx-sub">£1 = €1.2005</div>
+                </div>
+                <div class="fx-rate-card">
+                  <div class="fx-pair">EUR / USD</div>
+                  <div class="fx-rate" id="fx-eur-usd">1.0864</div>
+                  <div class="fx-sub">€1 = $1.0864</div>
+                </div>
+                <div class="fx-rate-card">
+                  <div class="fx-pair">GBP / JPY</div>
+                  <div class="fx-rate" id="fx-gbp-jpy">195.40</div>
+                  <div class="fx-sub">£1 = ¥195.40</div>
+                </div>
+              </div>
+
+              <!-- Quick Converter Mini Row -->
+              <div class="fx-quick-converter">
+                <div class="fqc-input-wrap">
+                  <span class="fqc-curr-label">£</span>
+                  <input type="number" id="fqc-amount" class="fqc-input" value="100" min="1" step="10">
+                </div>
+                <span class="fqc-arrow">=</span>
+                <div class="fqc-result-wrap" id="fqc-output">
+                  <span class="fqc-out-val" id="fqc-usd-res">$130.42</span>
+                  <span class="fqc-out-val" id="fqc-eur-res">€120.05</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- WIDGET 5: SEISMIC & ORBITAL RADAR -->
+          <article class="widget-card widget-world" id="widget-world" data-widget-id="world">
+            <div class="widget-header">
+              <div class="wh-left">
+                <span class="wh-icon">🛰️</span>
+                <div class="wh-title-group">
+                  <h3 class="wh-title">SEISMIC & SPACE RADAR</h3>
+                  <span class="wh-subtitle">Live USGS & ISS Tracking</span>
+                </div>
+              </div>
+              <div class="wh-actions">
+                <button class="wh-btn expand-btn" data-target-view="world" title="Open World View">↗</button>
+              </div>
+            </div>
+            <div class="widget-body widget-world-body">
+              <!-- ISS Real-time Status -->
+              <div class="iss-radar-card">
+                <div class="iss-status-head">
+                  <span class="iss-beacon"></span>
+                  <span class="iss-title">ISS ORBITAL VELOCITY: <strong id="iss-velocity">27,600 km/h</strong></span>
+                  <span class="iss-alt" id="iss-alt">Alt: 420 km</span>
+                </div>
+                <div class="iss-coords-row">
+                  <span class="iss-coord-tag">LAT: <strong id="iss-lat">0.00°</strong></span>
+                  <span class="iss-coord-tag">LON: <strong id="iss-lon">0.00°</strong></span>
+                  <span class="iss-coord-tag">DAYLIGHT: <strong id="iss-vis">YES</strong></span>
+                </div>
+              </div>
+
+              <!-- Latest Global Earthquakes -->
+              <div class="earthquake-quick-list">
+                <div class="eqk-title-bar">
+                  <span>RECENT SEISMIC EVENTS (USGS)</span>
+                  <span class="eqk-count" id="eqk-count">24h Feed</span>
+                </div>
+                <div class="eqk-items" id="eqk-overview-list">
+                  <div class="eqk-loading">Loading USGS earthquake data...</div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- WIDGET 6: LIVE NEWS WIRE -->
+          <article class="widget-card widget-news" id="widget-news" data-widget-id="news">
+            <div class="widget-header">
+              <div class="wh-left">
+                <span class="wh-icon">📰</span>
+                <div class="wh-title-group">
+                  <h3 class="wh-title">LIVE NEWS WIRE</h3>
+                  <span class="wh-subtitle">Space, Tech & Global Headlines</span>
+                </div>
+              </div>
+              <div class="wh-actions">
+                <div class="news-category-pills">
+                  <button class="n-pill active" data-news-cat="tech">Tech</button>
+                  <button class="n-pill" data-news-cat="space">Space</button>
+                  <button class="n-pill" data-news-cat="uk">UK</button>
+                </div>
+              </div>
+            </div>
+            <div class="widget-body widget-news-body">
+              <div class="news-scroll-container" id="news-overview-container">
+                <div class="news-loading">Fetching verified news streams...</div>
+              </div>
+            </div>
+          </article>
+
+          <!-- WIDGET 7: FOCUS & PRODUCTIVITY HUB -->
+          <article class="widget-card widget-tools" id="widget-tools" data-widget-id="tools">
+            <div class="widget-header">
+              <div class="wh-left">
+                <span class="wh-icon">⏱️</span>
+                <div class="wh-title-group">
+                  <h3 class="wh-title">FOCUS & SCRATCHPAD</h3>
+                  <span class="wh-subtitle">Local Browser Storage Persistence</span>
+                </div>
+              </div>
+              <div class="wh-actions">
+                <button class="wh-btn expand-btn" data-target-view="tools" title="Open Full Utilities Suite">↗</button>
+              </div>
+            </div>
+            <div class="widget-body widget-tools-body">
+              <!-- Pomodoro Quick Mini Widget -->
+              <div class="mini-pomodoro-panel">
+                <div class="pomo-display">
+                  <div class="pomo-time" id="mini-pomo-time">25:00</div>
+                  <div class="pomo-status" id="mini-pomo-status">WORK INTERVAL</div>
+                </div>
+                <div class="pomo-controls">
+                  <button class="pomo-btn" id="mini-pomo-start">START</button>
+                  <button class="pomo-btn secondary" id="mini-pomo-reset">RESET</button>
+                </div>
+              </div>
+
+              <!-- Quick Note Area -->
+              <div class="mini-scratchpad-panel">
+                <div class="scratchpad-header">
+                  <span>QUICK MEMO / SYSTEM NOTES</span>
+                  <span class="scratch-saved-indicator" id="scratch-saved-indicator">Auto-saved</span>
+                </div>
+                <textarea id="mini-scratchpad-input" class="scratchpad-textarea" placeholder="Type quick notes, grocery list, reminder or phone number here... (persists in local storage)"></textarea>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- VIEW 2: MARKETS TERMINAL (Full View)           -->
+      <!-- ============================================== -->
+      <section class="view-panel" id="view-markets" data-view="markets">
+        <div class="page-header">
+          <div class="ph-left">
+            <button class="nav-back-btn" data-target-view="overview">← BACK TO OVERVIEW</button>
+            <h2 class="page-title">FINANCIAL MARKETS & CRYPTO COMMAND</h2>
+          </div>
+          <div class="ph-right">
+            <div class="market-timeframe-selector" id="market-timeframes">
+              <button class="tf-btn active" data-tf="1D">1D</button>
+              <button class="tf-btn" data-tf="1W">1W</button>
+              <button class="tf-btn" data-tf="1M">1M</button>
+              <button class="tf-btn" data-tf="1Y">1Y</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="markets-full-layout">
+          <!-- Left Column: Detailed Stock Indices & Watchlist -->
+          <div class="markets-column">
+            <div class="section-card">
+              <div class="sec-head">
+                <h3>GLOBAL INDICES BREAKDOWN</h3>
+                <span class="sec-meta">Verified Exchanges</span>
+              </div>
+              <div class="indices-table-wrap">
+                <table class="nexus-table" id="indices-full-table">
+                  <thead>
+                    <tr>
+                      <th>Index</th>
+                      <th>Level</th>
+                      <th>Change</th>
+                      <th>% Change</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="indices-full-tbody">
+                    <!-- Populated by markets.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Custom Equities Watchlist with Add/Remove -->
+            <div class="section-card">
+              <div class="sec-head">
+                <h3>EQUITIES WATCHLIST</h3>
+                <div class="watchlist-add-form">
+                  <input type="text" id="add-ticker-input" placeholder="Ticker (e.g. AMZN)" maxlength="6">
+                  <button id="add-ticker-btn" class="btn-primary-mini">+ ADD</button>
+                </div>
+              </div>
+              <div class="watchlist-full-grid" id="watchlist-full-grid">
+                <!-- Dynamically rendered -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Cryptocurrency Deep Dive -->
+          <div class="markets-column">
+            <div class="section-card">
+              <div class="sec-head">
+                <h3>CRYPTOCURRENCY MARKET DEPTH</h3>
+                <span class="sec-meta">Live CoinGecko + Kraken Feed</span>
+              </div>
+              <div class="crypto-full-table-wrap">
+                <table class="nexus-table" id="crypto-full-table">
+                  <thead>
+                    <tr>
+                      <th>Asset</th>
+                      <th>Price</th>
+                      <th>24h Change</th>
+                      <th>24h Volume / Cap</th>
+                      <th>Trend</th>
+                    </tr>
+                  </thead>
+                  <tbody id="crypto-full-tbody">
+                    <!-- Populated by crypto.js -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Interactive Chart Area -->
+            <div class="section-card">
+              <div class="sec-head">
+                <h3 id="chart-active-title">BITCOIN (BTC/GBP) — INTERACTIVE CHART</h3>
+                <div class="chart-controls">
+                  <button class="chart-toggle-btn active" id="btn-chart-btc">BTC</button>
+                  <button class="chart-toggle-btn" id="btn-chart-eth">ETH</button>
+                  <button class="chart-toggle-btn" id="btn-chart-ftse">FTSE</button>
+                </div>
+              </div>
+              <div class="interactive-chart-container" id="interactive-chart-container">
+                <canvas id="market-detail-canvas" width="600" height="220"></canvas>
+                <div class="chart-hover-tooltip" id="chart-hover-tooltip"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- VIEW 3: WEATHER CENTRE (Full View)             -->
+      <!-- ============================================== -->
+      <section class="view-panel" id="view-weather" data-view="weather">
+        <div class="page-header">
+          <div class="ph-left">
+            <button class="nav-back-btn" data-target-view="overview">← BACK TO OVERVIEW</button>
+            <h2 class="page-title">METEOROLOGICAL OBSERVATORY & FORECAST CENTRE</h2>
+          </div>
+          <!-- Location Geocoding Search -->
+          <div class="ph-right">
+            <div class="weather-search-bar">
+              <input type="text" id="weather-city-input" placeholder="Search city (e.g. Edinburgh, London, Tokyo)...">
+              <button id="btn-weather-search" class="btn-primary-mini">SEARCH</button>
+              <button id="btn-weather-reset-glasgow" class="btn-secondary-mini" title="Reset to Glasgow">GLASGOW</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="weather-full-layout">
+          <!-- Hero Banner -->
+          <div class="weather-hero-banner">
+            <div class="whb-main">
+              <div class="whb-icon" id="wf-hero-icon">🌧️</div>
+              <div class="whb-temp-block">
+                <span class="whb-temp" id="wf-hero-temp">--°C</span>
+                <span class="whb-condition" id="wf-hero-cond">Loading complete weather model...</span>
+                <span class="whb-location" id="wf-hero-loc">Glasgow, Scotland (55.86°N, 4.25°W)</span>
+              </div>
+            </div>
+            <!-- Meteorological Deep Metrics Grid -->
+            <div class="whb-metrics-grid">
+              <div class="whb-metric">
+                <span class="whb-m-lbl">Apparent Temp</span>
+                <span class="whb-m-val" id="wf-apparent">--°C</span>
+              </div>
+              <div class="whb-metric">
+                <span class="whb-m-lbl">Precipitation</span>
+                <span class="whb-m-val" id="wf-precip">0.0 mm</span>
+              </div>
+              <div class="whb-metric">
+                <span class="whb-m-lbl">Wind Gusts</span>
+                <span class="whb-m-val" id="wf-wind-gust">-- mph</span>
+              </div>
+              <div class="whb-metric">
+                <span class="whb-m-lbl">Barometric Pressure</span>
+                <span class="whb-m-val" id="wf-pressure">-- hPa</span>
+              </div>
+              <div class="whb-metric">
+                <span class="whb-m-lbl">Air Quality (AQI)</span>
+                <span class="whb-m-val highlight" id="wf-aqi">Good (18)</span>
+              </div>
+              <div class="whb-metric">
+                <span class="whb-m-lbl">PM 2.5 Fine Dust</span>
+                <span class="whb-m-val" id="wf-pm25">-- µg/m³</span>
+              </div>
+              <div class="whb-metric">
+                <span class="whb-m-lbl">Sunrise / Sunset</span>
+                <span class="whb-m-val" id="wf-sun-times">07:45 / 18:12</span>
+              </div>
+              <div class="whb-metric">
+                <span class="whb-m-lbl">Daylight Remaining</span>
+                <span class="whb-m-val" id="wf-daylight-rem">-- hrs</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 24-Hour Detailed Curve & Rain Probability -->
+          <div class="section-card">
+            <div class="sec-head">
+              <h3>24-HOUR HOURLY TEMPERATURE & RAIN PROFILE</h3>
+              <span class="sec-meta">Open-Meteo High Resolution Forecast</span>
+            </div>
+            <div class="weather-chart-wrap">
+              <canvas id="weather-hourly-canvas" width="1180" height="200"></canvas>
+            </div>
+          </div>
+
+          <!-- 7-Day Extended Outlook -->
+          <div class="section-card">
+            <div class="sec-head">
+              <h3>7-DAY METEOROLOGICAL OUTLOOK</h3>
+              <span class="sec-meta">High / Low Temperature Range & Weather Conditions</span>
+            </div>
+            <div class="seven-day-grid" id="seven-day-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- VIEW 4: WORLD & SPACE RADAR (Full View)        -->
+      <!-- ============================================== -->
+      <section class="view-panel" id="view-world" data-view="world">
+        <div class="page-header">
+          <div class="ph-left">
+            <button class="nav-back-btn" data-target-view="overview">← BACK TO OVERVIEW</button>
+            <h2 class="page-title">WORLD TIME, SEISMOLOGY & SPACE EXPLORER</h2>
+          </div>
+        </div>
+
+        <div class="world-full-layout">
+          <!-- World Clocks Bar -->
+          <div class="section-card">
+            <div class="sec-head">
+              <h3>SYNCHRONIZED GLOBAL TIME ZONES</h3>
+              <span class="sec-meta">IANA Database Synchronized</span>
+            </div>
+            <div class="world-clocks-grid" id="world-clocks-full-grid">
+              <!-- Glasgow/London, New York, Tokyo, Dubai, Sydney, San Francisco -->
+            </div>
+          </div>
+
+          <div class="world-split-row">
+            <!-- Left: USGS Earthquakes -->
+            <div class="world-split-col">
+              <div class="section-card">
+                <div class="sec-head">
+                  <h3>USGS SEISMIC ACTIVITY MONITOR</h3>
+                  <div class="quake-filter-btns">
+                    <button class="q-btn active" data-qfilter="all">All</button>
+                    <button class="q-btn" data-qfilter="2.5">M2.5+</button>
+                    <button class="q-btn" data-qfilter="4.5">M4.5+</button>
+                  </div>
+                </div>
+                <div class="quake-full-list" id="quake-full-list">
+                  <!-- Real USGS earthquakes -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Astronomy & ISS Orbit -->
+            <div class="world-split-col">
+              <!-- Moon Phase & Celestial -->
+              <div class="section-card">
+                <div class="sec-head">
+                  <h3>LUNAR & ASTRONOMICAL MILESTONES</h3>
+                  <span class="sec-meta">Exact Ephemeris Algorithm</span>
+                </div>
+                <div class="lunar-card-content">
+                  <div class="lunar-graphic" id="lunar-graphic">
+                    <div class="moon-render-circle" id="moon-render-circle">
+                      <div class="moon-phase-shadow" id="moon-phase-shadow"></div>
+                    </div>
+                  </div>
+                  <div class="lunar-info-block">
+                    <h4 class="lunar-phase-name" id="lunar-phase-name">Waxing Gibbous</h4>
+                    <div class="lunar-metric">Illumination: <strong id="lunar-illum-val">84%</strong></div>
+                    <div class="lunar-metric">Days to Full Moon: <strong id="lunar-days-full">3 Days</strong></div>
+                    <div class="lunar-metric">Days to New Moon: <strong id="lunar-days-new">17 Days</strong></div>
+                    <div class="lunar-metric">Moon Age: <strong id="lunar-age">10.4 Days</strong></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Space & Science News Wire -->
+              <div class="section-card">
+                <div class="sec-head">
+                  <h3>SPACEFLIGHT & ASTROPHYSICS NEWS</h3>
+                  <span class="sec-meta">SpaceFlight News API</span>
+                </div>
+                <div class="space-news-list" id="space-news-list">
+                  <!-- Live space news -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- VIEW 5: INTERACTIVE UTILITIES (Tools)          -->
+      <!-- ============================================== -->
+      <section class="view-panel" id="view-tools" data-view="tools">
+        <div class="page-header">
+          <div class="ph-left">
+            <button class="nav-back-btn" data-target-view="overview">← BACK TO OVERVIEW</button>
+            <h2 class="page-title">INTERACTIVE UTILITIES & CALCULATORS</h2>
+          </div>
+          <!-- Utility Sub-Tab Selector -->
+          <div class="ph-right">
+            <div class="tools-subtab-bar" id="tools-subtabs">
+              <button class="t-tab active" data-tool="calc">Calculator</button>
+              <button class="t-tab" data-tool="timers">Timers & Stopwatch</button>
+              <button class="t-tab" data-tool="finance">Financial Tools</button>
+              <button class="t-tab" data-tool="notes">Notes & Tasks</button>
+              <button class="t-tab" data-tool="qr">QR Generator</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tools-full-layout">
+          <!-- TOOL 1: CALCULATOR -->
+          <div class="tool-content-pane active" id="pane-calc">
+            <div class="calculator-container">
+              <div class="calc-screen">
+                <div class="calc-history" id="calc-history"></div>
+                <div class="calc-current" id="calc-display">0</div>
+              </div>
+              <div class="calc-pad">
+                <button class="c-key op" data-calc="clear">C</button>
+                <button class="c-key op" data-calc="del">DEL</button>
+                <button class="c-key op" data-calc="%">%</button>
+                <button class="c-key op action" data-calc="/">÷</button>
+
+                <button class="c-key num" data-calc="7">7</button>
+                <button class="c-key num" data-calc="8">8</button>
+                <button class="c-key num" data-calc="9">9</button>
+                <button class="c-key op action" data-calc="*">×</button>
+
+                <button class="c-key num" data-calc="4">4</button>
+                <button class="c-key num" data-calc="5">5</button>
+                <button class="c-key num" data-calc="6">6</button>
+                <button class="c-key op action" data-calc="-">−</button>
+
+                <button class="c-key num" data-calc="1">1</button>
+                <button class="c-key num" data-calc="2">2</button>
+                <button class="c-key num" data-calc="3">3</button>
+                <button class="c-key op action" data-calc="+">+</button>
+
+                <button class="c-key num zero" data-calc="0">0</button>
+                <button class="c-key num" data-calc=".">.</button>
+                <button class="c-key equals" data-calc="=">=</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOOL 2: TIMERS, STOPWATCH & POMODORO -->
+          <div class="tool-content-pane" id="pane-timers">
+            <div class="timers-triple-grid">
+              <!-- Pomodoro -->
+              <div class="section-card timer-card">
+                <div class="sec-head">
+                  <h3>POMODORO FOCUS ENGINE</h3>
+                  <span class="sec-meta">25m Work / 5m Rest</span>
+                </div>
+                <div class="pomo-big-clock" id="pomo-full-digits">25:00</div>
+                <div class="pomo-state-label" id="pomo-full-state">READY TO FOCUS</div>
+                <div class="timer-btn-row">
+                  <button class="btn-primary" id="btn-pomo-full-toggle">START FOCUS</button>
+                  <button class="btn-secondary" id="btn-pomo-full-reset">RESET</button>
+                  <button class="btn-secondary" id="btn-pomo-full-break">SHORT BREAK</button>
+                </div>
+              </div>
+
+              <!-- Precision Stopwatch -->
+              <div class="section-card timer-card">
+                <div class="sec-head">
+                  <h3>PRECISION STOPWATCH</h3>
+                  <span class="sec-meta">10ms Accuracy</span>
+                </div>
+                <div class="stopwatch-digits" id="sw-digits">00:00:00.00</div>
+                <div class="timer-btn-row">
+                  <button class="btn-primary" id="btn-sw-start">START</button>
+                  <button class="btn-secondary" id="btn-sw-lap">LAP</button>
+                  <button class="btn-secondary" id="btn-sw-reset">RESET</button>
+                </div>
+                <div class="sw-laps-box" id="sw-laps-box"></div>
+              </div>
+
+              <!-- Countdown Timer -->
+              <div class="section-card timer-card">
+                <div class="sec-head">
+                  <h3>COUNTDOWN TIMER</h3>
+                  <span class="sec-meta">Presets & Custom</span>
+                </div>
+                <div class="countdown-digits" id="cd-digits">05:00</div>
+                <div class="cd-preset-row">
+                  <button class="cd-preset-btn" data-cd="60">1m</button>
+                  <button class="cd-preset-btn active" data-cd="300">5m</button>
+                  <button class="cd-preset-btn" data-cd="900">15m</button>
+                  <button class="cd-preset-btn" data-cd="1800">30m</button>
+                </div>
+                <div class="timer-btn-row">
+                  <button class="btn-primary" id="btn-cd-start">START</button>
+                  <button class="btn-secondary" id="btn-cd-reset">RESET</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOOL 3: FINANCIAL CALCULATORS -->
+          <div class="tool-content-pane" id="pane-finance">
+            <div class="finance-tools-grid">
+              <!-- Mortgage Repayment Calculator -->
+              <div class="section-card">
+                <div class="sec-head">
+                  <h3>MORTGAGE REPAYMENT CALCULATOR</h3>
+                  <span class="sec-meta">Monthly payment & total interest</span>
+                </div>
+                <div class="calc-form">
+                  <div class="form-group">
+                    <label>Loan Amount (£)</label>
+                    <input type="number" id="mort-loan" value="250000" step="5000">
+                  </div>
+                  <div class="form-group">
+                    <label>Interest Rate (% per annum)</label>
+                    <input type="number" id="mort-rate" value="4.5" step="0.1">
+                  </div>
+                  <div class="form-group">
+                    <label>Loan Term (Years)</label>
+                    <input type="number" id="mort-term" value="25" step="1">
+                  </div>
+                  <div class="calc-result-box">
+                    <div class="crb-label">ESTIMATED MONTHLY REPAYMENT:</div>
+                    <div class="crb-value" id="mort-result">£1,389.35</div>
+                    <div class="crb-sub" id="mort-interest-sub">Total Interest: £166,805.00</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Compound Interest / Investment Growth -->
+              <div class="section-card">
+                <div class="sec-head">
+                  <h3>COMPOUND INTEREST CALCULATOR</h3>
+                  <span class="sec-meta">Wealth accumulation projection</span>
+                </div>
+                <div class="calc-form">
+                  <div class="form-group">
+                    <label>Initial Deposit (£)</label>
+                    <input type="number" id="ci-initial" value="10000" step="1000">
+                  </div>
+                  <div class="form-group">
+                    <label>Monthly Contribution (£)</label>
+                    <input type="number" id="ci-monthly" value="250" step="50">
+                  </div>
+                  <div class="form-group">
+                    <label>Annual Return (%)</label>
+                    <input type="number" id="ci-rate" value="7.0" step="0.5">
+                  </div>
+                  <div class="form-group">
+                    <label>Investment Horizon (Years)</label>
+                    <input type="number" id="ci-years" value="10" step="1">
+                  </div>
+                  <div class="calc-result-box">
+                    <div class="crb-label">PROJECTED FUTURE VALUE:</div>
+                    <div class="crb-value" id="ci-result">£63,165.20</div>
+                    <div class="crb-sub" id="ci-contributions-sub">Total Invested: £40,000 • Growth: £23,165</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Percentage & Markup Calculator -->
+              <div class="section-card">
+                <div class="sec-head">
+                  <h3>PERCENTAGE & VAT CALCULATOR</h3>
+                  <span class="sec-meta">UK 20% VAT, discounts & margin</span>
+                </div>
+                <div class="calc-form">
+                  <div class="form-group">
+                    <label>Amount (£)</label>
+                    <input type="number" id="pct-amount" value="100" step="5">
+                  </div>
+                  <div class="form-group">
+                    <label>Percentage Rate (%)</label>
+                    <input type="number" id="pct-rate" value="20" step="1">
+                  </div>
+                  <div class="calc-result-box">
+                    <div class="crb-label">RESULTS:</div>
+                    <div class="pct-results-grid">
+                      <div>Percentage Value: <strong id="pct-val">£20.00</strong></div>
+                      <div>Total with Add-on: <strong id="pct-add">£120.00</strong></div>
+                      <div>Total with Discount: <strong id="pct-sub">£80.00</strong></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOOL 4: NOTES & TO-DO TASKS -->
+          <div class="tool-content-pane" id="pane-notes">
+            <div class="notes-tasks-split">
+              <!-- To-Do List -->
+              <div class="section-card">
+                <div class="sec-head">
+                  <h3>SYSTEM TO-DO LIST</h3>
+                  <span class="sec-meta">Persisted in local browser storage</span>
+                </div>
+                <div class="todo-input-row">
+                  <input type="text" id="todo-input" placeholder="Add task or reminder...">
+                  <button id="todo-add-btn" class="btn-primary-mini">+ ADD</button>
+                </div>
+                <div class="todo-items-list" id="todo-items-list">
+                  <!-- Rendered from localStorage -->
+                </div>
+              </div>
+
+              <!-- Full Notes Editor -->
+              <div class="section-card">
+                <div class="sec-head">
+                  <h3>LOCAL SCRATCHPAD & MEMO</h3>
+                  <button id="notes-clear-btn" class="btn-secondary-mini">CLEAR</button>
+                </div>
+                <textarea id="notes-full-area" class="notes-full-area" placeholder="Write comprehensive notes, technical notes, ideas or snippets here..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOOL 5: OFFLINE QR CODE GENERATOR -->
+          <div class="tool-content-pane" id="pane-qr">
+            <div class="qr-gen-container">
+              <div class="section-card qr-card">
+                <div class="sec-head">
+                  <h3>OFFLINE QR CODE GENERATOR</h3>
+                  <span class="sec-meta">Pure Client-Side SVG • Zero Data Sent to Servers</span>
+                </div>
+                <div class="qr-form">
+                  <div class="form-group">
+                    <label>Enter Text, URL or Wi-Fi code to generate QR code:</label>
+                    <input type="text" id="qr-input-text" value="https://github.com" placeholder="https://example.com or Wi-Fi password">
+                  </div>
+                  <div class="qr-presets">
+                    <button class="qr-quick-btn" data-qr="WIFI:S:HomeNetwork;T:WPA;P:Password123;;">Wi-Fi Preset</button>
+                    <button class="qr-quick-btn" data-qr="https://open-meteo.com">Open-Meteo</button>
+                    <button class="qr-quick-btn" data-qr="https://frankfurter.dev">Frankfurter</button>
+                  </div>
+                </div>
+                <div class="qr-display-box" id="qr-output-box">
+                  <div id="qr-svg-wrapper"></div>
+                  <div class="qr-meta-sub">Scan using your phone's camera directly from this screen</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- VIEW 6: FUTURE SMART HOME ARCHITECTURE        -->
+      <!-- ============================================== -->
+      <section class="view-panel" id="view-home" data-view="home">
+        <div class="page-header">
+          <div class="ph-left">
+            <button class="nav-back-btn" data-target-view="overview">← BACK TO OVERVIEW</button>
+            <h2 class="page-title">SMART HOME & CAMERA INTEGRATION CENTER</h2>
+          </div>
+          <div class="ph-right">
+            <span class="wh-badge delayed-badge">OPTIONAL UPGRADE READY</span>
+          </div>
+        </div>
+
+        <div class="home-layout">
+          <!-- Architecture Notice Callout -->
+          <div class="arch-notice-box">
+            <div class="anb-icon">🛡️</div>
+            <div class="anb-text">
+              <h4>SECURE SMART HOME ARCHITECTURE NOTICE</h4>
+              <p>For security, client-side public GitHub Pages cannot directly embed unencrypted local HTTP camera streams or store sensitive private credentials. To activate live camera feeds or local automation, deploy the frontend to <strong>Cloudflare Pages</strong> paired with a private <strong>WebRTC / go2rtc HTTPS Gateway</strong> or authenticated Home Assistant proxy. Below is the interactive control interface ready for backend binding.</p>
+            </div>
+          </div>
+
+          <!-- Smart Home Widgets Grid -->
+          <div class="home-widgets-grid">
+            <!-- Camera Stream 1 -->
+            <div class="section-card camera-card">
+              <div class="sec-head">
+                <h3>FRONT ENTRANCE CAMERA</h3>
+                <span class="cam-live-indicator"><span class="cam-dot"></span> FEED STANDBY</span>
+              </div>
+              <div class="camera-stream-wrapper">
+                <div class="cam-overlay">
+                  <span class="cam-time" id="cam-timestamp">CAM 01 • 1080P HD</span>
+                  <span class="cam-fps">30 FPS</span>
+                </div>
+                <div class="cam-feed-placeholder">
+                  <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M23 7l-7 5 7 5V7z"/>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                  </svg>
+                  <span>CONNECT WEBRTC / HLS STREAM GATEWAY</span>
+                  <small>Configure endpoint in Settings &gt; Smart Home</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Camera Stream 2 -->
+            <div class="section-card camera-card">
+              <div class="sec-head">
+                <h3>REAR GARDEN & PATIO</h3>
+                <span class="cam-live-indicator"><span class="cam-dot"></span> FEED STANDBY</span>
+              </div>
+              <div class="camera-stream-wrapper">
+                <div class="cam-overlay">
+                  <span class="cam-time">CAM 02 • 1080P HD</span>
+                  <span class="cam-fps">30 FPS</span>
+                </div>
+                <div class="cam-feed-placeholder">
+                  <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M23 7l-7 5 7 5V7z"/>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                  </svg>
+                  <span>CONNECT WEBRTC / HLS STREAM GATEWAY</span>
+                  <small>Requires HTTPS/WSS proxy for browser playback</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Environmental Climate Control -->
+            <div class="section-card">
+              <div class="sec-head">
+                <h3>CLIMATE CONTROL & THERMOSTAT</h3>
+                <span class="sec-meta">Target: 21.0°C</span>
+              </div>
+              <div class="thermostat-widget">
+                <div class="thermo-dial">
+                  <span class="thermo-cur-label">CURRENT</span>
+                  <span class="thermo-cur-temp">20.5°C</span>
+                  <span class="thermo-mode">HEATING (ECO)</span>
+                </div>
+                <div class="thermo-controls">
+                  <button class="thermo-btn" id="btn-thermo-down">−</button>
+                  <span class="thermo-target-val" id="thermo-target">21.0°</span>
+                  <button class="thermo-btn" id="btn-thermo-up">+</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lighting & Smart Plugs Control -->
+            <div class="section-card">
+              <div class="sec-head">
+                <h3>LIGHTING & DEVICE SWITCHES</h3>
+                <span class="sec-meta">Interactive Demo State</span>
+              </div>
+              <div class="switches-grid">
+                <div class="switch-card" data-sw="living-room">
+                  <div class="sw-info">
+                    <span class="sw-name">Living Room Lights</span>
+                    <span class="sw-state">ON • 85%</span>
+                  </div>
+                  <label class="nexus-toggle">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="switch-card" data-sw="kitchen">
+                  <div class="sw-info">
+                    <span class="sw-name">Kitchen Island</span>
+                    <span class="sw-state">OFF</span>
+                  </div>
+                  <label class="nexus-toggle">
+                    <input type="checkbox">
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="switch-card" data-sw="office">
+                  <div class="sw-info">
+                    <span class="sw-name">Office Desk Light</span>
+                    <span class="sw-state">ON • 100%</span>
+                  </div>
+                  <label class="nexus-toggle">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+                <div class="switch-card" data-sw="media">
+                  <div class="sw-info">
+                    <span class="sw-name">Media Center Plug</span>
+                    <span class="sw-state">ON (68W)</span>
+                  </div>
+                  <label class="nexus-toggle">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- VIEW 7: SETTINGS & CUSTOMISATION (Engine)      -->
+      <!-- ============================================== -->
+      <section class="view-panel" id="view-settings" data-view="settings">
+        <div class="page-header">
+          <div class="ph-left">
+            <button class="nav-back-btn" data-target-view="overview">← BACK TO OVERVIEW</button>
+            <h2 class="page-title">SYSTEM PREFERENCES & CUSTOMISATION ENGINE</h2>
+          </div>
+          <div class="ph-right">
+            <button id="btn-reset-defaults" class="btn-danger-mini">RESET DEFAULTS</button>
+          </div>
+        </div>
+
+        <div class="settings-full-layout">
+          <!-- 1. Theme & Appearance -->
+          <div class="section-card">
+            <div class="sec-head">
+              <h3>VISUAL THEME & ACCENT LIGHTING</h3>
+              <span class="sec-meta">Real-time switching</span>
+            </div>
+            <div class="settings-group">
+              <label class="set-label">Visual Palette</label>
+              <div class="theme-picker-grid" id="theme-picker-grid">
+                <button class="theme-card-btn active" data-theme="obsidian">
+                  <span class="th-swatch swatch-obsidian"></span>
+                  <span class="th-name">Cyber Obsidian (Default)</span>
+                </button>
+                <button class="theme-card-btn" data-theme="midnight">
+                  <span class="th-swatch swatch-midnight"></span>
+                  <span class="th-name">Midnight Blue</span>
+                </button>
+                <button class="theme-card-btn" data-theme="emerald">
+                  <span class="th-swatch swatch-emerald"></span>
+                  <span class="th-name">Matrix Emerald</span>
+                </button>
+                <button class="theme-card-btn" data-theme="amber">
+                  <span class="th-swatch swatch-amber"></span>
+                  <span class="th-name">Solar Amber</span>
+                </button>
+                <button class="theme-card-btn" data-theme="crimson">
+                  <span class="th-swatch swatch-crimson"></span>
+                  <span class="th-name">Crimson Protocol</span>
+                </button>
+                <button class="theme-card-btn" data-theme="titanium">
+                  <span class="th-swatch swatch-titanium"></span>
+                  <span class="th-name">Titanium Light</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Accent Colors -->
+            <div class="settings-group">
+              <label class="set-label">Neon Accent Color</label>
+              <div class="accent-color-row" id="accent-color-row">
+                <button class="accent-dot-btn active" data-color="#00f0ff" style="background: #00f0ff;" title="Electric Cyan"></button>
+                <button class="accent-dot-btn" data-color="#3b82f6" style="background: #3b82f6;" title="Hyper Blue"></button>
+                <button class="accent-dot-btn" data-color="#10b981" style="background: #10b981;" title="Emerald"></button>
+                <button class="accent-dot-btn" data-color="#a855f7" style="background: #a855f7;" title="Ultraviolet"></button>
+                <button class="accent-dot-btn" data-color="#f59e0b" style="background: #f59e0b;" title="Amber"></button>
+                <button class="accent-dot-btn" data-color="#ef4444" style="background: #ef4444;" title="Crimson"></button>
+              </div>
+            </div>
+
+            <!-- Layout Density -->
+            <div class="settings-group">
+              <label class="set-label">Layout Density (RK3326 1280x800)</label>
+              <div class="density-selector">
+                <button class="dens-btn active" data-density="kiosk">Kiosk Touch (1280×800 Optimized)</button>
+                <button class="dens-btn" data-density="compact">Ultra Compact</button>
+                <button class="dens-btn" data-density="comfortable">Comfortable</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Widget Arrangement & Toggles -->
+          <div class="section-card">
+            <div class="sec-head">
+              <h3>WIDGET MANAGEMENT & VISIBILITY</h3>
+              <span class="sec-meta">Toggle & re-order widgets with touch</span>
+            </div>
+            <div class="widget-reorder-list" id="widget-manager-list">
+              <!-- Dynamically populated with toggle switches and Move Up/Down touch controls -->
+            </div>
+          </div>
+
+          <!-- 3. Units & Localization -->
+          <div class="section-card">
+            <div class="sec-head">
+              <h3>UNITS & FORMATTING</h3>
+              <span class="sec-meta">Measurement systems</span>
+            </div>
+            <div class="settings-grid-cols">
+              <div class="form-group">
+                <label>Clock Time Format</label>
+                <select id="set-clock-format">
+                  <option value="24" selected>24-Hour (14:30)</option>
+                  <option value="12">12-Hour AM/PM (2:30 PM)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Clock Seconds Display</label>
+                <select id="set-clock-seconds">
+                  <option value="true" selected>Show Seconds</option>
+                  <option value="false">Hide Seconds</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Temperature Units</label>
+                <select id="set-temp-units">
+                  <option value="celsius" selected>Celsius (°C)</option>
+                  <option value="fahrenheit">Fahrenheit (°F)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Wind Speed Units</label>
+                <select id="set-wind-units">
+                  <option value="mph" selected>Miles per hour (mph)</option>
+                  <option value="kmh">Kilometres per hour (km/h)</option>
+                  <option value="ms">Metres per second (m/s)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Base Fiat Currency</label>
+                <select id="set-base-currency">
+                  <option value="gbp" selected>British Pound (£ GBP)</option>
+                  <option value="usd">US Dollar ($ USD)</option>
+                  <option value="eur">Euro (€ EUR)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Backup, Export & System Diagnostic -->
+          <div class="section-card">
+            <div class="sec-head">
+              <h3>SYSTEM DIAGNOSTICS & CONFIGURATION BACKUP</h3>
+              <span class="sec-meta">Local Storage & Kiosk Specs</span>
+            </div>
+            <div class="diag-split">
+              <div class="diag-info-box" id="diag-info-box">
+                <div>Device / Screen: <strong id="diag-screen">1280 × 800</strong></div>
+                <div>User Agent: <strong id="diag-ua">Android WebView / Chrome</strong></div>
+                <div>Storage Used: <strong id="diag-storage">14.2 KB</strong></div>
+                <div>Data Engine Status: <strong id="diag-engine">ACTIVE • HEALTHY</strong></div>
+              </div>
+              <div class="backup-actions">
+                <button id="btn-export-config" class="btn-primary">EXPORT CONFIG (JSON)</button>
+                <button id="btn-import-config-trigger" class="btn-secondary">IMPORT CONFIG</button>
+                <input type="file" id="import-config-file" accept=".json" class="hidden">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- PERSISTENT BOTTOM NAVIGATION DOCK -->
+    <nav class="system-dock" id="system-dock" aria-label="Main Navigation">
+      <div class="dock-inner">
+        <button class="dock-item active" data-target-view="overview" id="dock-btn-overview">
+          <span class="dock-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </span>
+          <span class="dock-label">OVERVIEW</span>
+        </button>
+
+        <button class="dock-item" data-target-view="markets" id="dock-btn-markets">
+          <span class="dock-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+              <polyline points="16 7 22 7 22 13"/>
+            </svg>
+          </span>
+          <span class="dock-label">MARKETS</span>
+        </button>
+
+        <button class="dock-item" data-target-view="weather" id="dock-btn-weather">
+          <span class="dock-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+            </svg>
+          </span>
+          <span class="dock-label">WEATHER</span>
+        </button>
+
+        <button class="dock-item" data-target-view="world" id="dock-btn-world">
+          <span class="dock-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+          </span>
+          <span class="dock-label">WORLD</span>
+        </button>
+
+        <button class="dock-item" data-target-view="home" id="dock-btn-home">
+          <span class="dock-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </span>
+          <span class="dock-label">SMART HOME</span>
+        </button>
+
+        <button class="dock-item" data-target-view="tools" id="dock-btn-tools">
+          <span class="dock-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </span>
+          <span class="dock-label">TOOLS</span>
+        </button>
+
+        <button class="dock-item" data-target-view="settings" id="dock-btn-settings">
+          <span class="dock-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </span>
+          <span class="dock-label">SETTINGS</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- FLOATING TOAST NOTIFICATION HUD -->
+    <div class="nexus-toast-hud" id="nexus-toast-hud" aria-live="polite">
+      <div class="toast-inner" id="toast-message">NEXUS OS Initialized</div>
+    </div>
+
+    <!-- FULLSCREEN MODAL / INSPECTION CONTAINER -->
+    <div class="nexus-modal-overlay" id="nexus-modal-overlay" aria-hidden="true">
+      <div class="nexus-modal-container" id="nexus-modal-container">
+        <div class="modal-header">
+          <h3 class="modal-title" id="modal-title">Widget Inspection</h3>
+          <button class="modal-close-btn" id="modal-close-btn" aria-label="Close modal">×</button>
+        </div>
+        <div class="modal-body" id="modal-body">
+          <!-- Dynamic content injection -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- APPLICATION SCRIPTS -->
+  <!-- Storage & State -->
+  <script src="./js/storage.js"></script>
+  <!-- Utilities & Math -->
+  <script src="./js/utils.js"></script>
+  <!-- Zero-dependency Lightweight SVG & Canvas Charts -->
+  <script src="./js/charts.js"></script>
+  <!-- Central Async Data Engine & Cache -->
+  <script src="./js/data-engine.js"></script>
+  <!-- Widget Implementations -->
+  <script src="./js/widgets/header.js"></script>
+  <script src="./js/widgets/weather.js"></script>
+  <script src="./js/widgets/markets.js"></script>
+  <script src="./js/widgets/crypto.js"></script>
+  <script src="./js/widgets/fx.js"></script>
+  <script src="./js/widgets/world.js"></script>
+  <script src="./js/widgets/news.js"></script>
+  <script src="./js/widgets/utilities.js"></script>
+  <script src="./js/widgets/smarthome.js"></script>
+  <script src="./js/widgets/settings.js"></script>
+  <!-- Core App Bootstrap & Router -->
+  <script src="./js/app.js"></script>
+</body>
+</html>

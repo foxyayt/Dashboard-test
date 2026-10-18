@@ -16,7 +16,7 @@
     demoMode: false,
     clock: {
       format: '24', // '12' or '24'
-      showSeconds: true,
+      showSeconds: false,
       showDate: true
     },
     units: {
@@ -30,7 +30,7 @@
       region: 'Scotland',
       latitude: 55.8642,
       longitude: -4.2518,
-      timezone: 'auto'
+      timezone: 'Europe/London'
     },
     widgets: [
       { id: 'weather', name: 'Glasgow Weather Centre', enabled: true, order: 0 },

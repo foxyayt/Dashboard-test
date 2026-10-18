@@ -21,54 +21,33 @@
     }
 
     initClock() {
-      this.tick();
-      setInterval(() => this.tick(), 1000);
+      const run = () => {
+        clearTimeout(this.clockTimer);
+        if (document.hidden) return;
+        this.tick();
+        const step = NexusStorage.get('clock.showSeconds', false) && document.body.getAttribute('data-active-view') !== 'overview' ? 1000 : 60000;
+        this.clockTimer = setTimeout(run, step - Date.now() % step + 20);
+      };
+      this.restartClock = run;
+      document.addEventListener('visibilitychange', run);
+      NexusDataEngine.on('location_changed', run);
+      run();
     }
 
     tick() {
-      const now = new Date();
+      const now = NexusTime.current();
       const is12Hour = NexusStorage.get('clock.format', '24') === '12';
-      const showSeconds = NexusStorage.get('clock.showSeconds', true);
-
-      let hours = now.getHours();
-      let ampm = '';
-
-      if (is12Hour) {
-        ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12 || 12;
-      }
-
-      const hrsStr = String(hours).padStart(2, '0');
-      const minsStr = String(now.getMinutes()).padStart(2, '0');
-      const secsStr = ':' + String(now.getSeconds()).padStart(2, '0');
-
-      if (this.hrsEl) this.hrsEl.textContent = hrsStr;
-      if (this.minsEl) this.minsEl.textContent = minsStr;
-      
-      if (this.secsEl) {
-        this.secsEl.textContent = showSeconds ? secsStr : '';
-      }
-      
-      if (this.ampmEl) {
-        this.ampmEl.textContent = is12Hour ? ampm : '';
-      }
-
-      // Date & Day
-      const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-      const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-
-      if (this.dayEl) this.dayEl.textContent = days[now.getDay()];
-      if (this.dateEl) {
-        this.dateEl.textContent = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-      }
-
-      // Timezone / Location label
-      const loc = NexusStorage.get('location.name', 'Glasgow');
-      if (this.tzEl) {
-        this.tzEl.textContent = `${loc.toUpperCase()} (LOCAL)`;
-      }
-
-      // Update sync indicator relative time
+      const showSeconds = NexusStorage.get('clock.showSeconds', false);
+      const hours = now ? Number(now.hour) : 0;
+      const set = (el, value) => { if (el && el.textContent !== value) el.textContent = value; };
+      set(this.hrsEl, now ? String(is12Hour ? hours % 12 || 12 : hours).padStart(2,'0') : '—');
+      set(this.minsEl, now ? now.minute : '—');
+      set(this.secsEl, now && showSeconds ? ':' + now.second : '');
+      set(this.ampmEl, now && is12Hour ? (hours >= 12 ? 'PM' : 'AM') : '');
+      set(this.dayEl, now ? now.weekday : '');
+      set(this.dateEl, now ? now.day + '/' + now.month + '/' + now.year : 'Resolving timezone');
+      set(this.tzEl, NexusStorage.get('location.name', 'Glasgow'));
+      if (window.NexusHome) NexusHome.tick();
       NexusDataEngine.updateSyncUI();
     }
 

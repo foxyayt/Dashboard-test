@@ -65,7 +65,7 @@
         }
       } catch (err) {
         console.warn(`[News] Fetch failed for ${category}:`, err.message);
-        this.renderDemoNews(category);
+        if (container) container.textContent = 'News unavailable. Please try again later.';
       }
     }
 

@@ -50,7 +50,7 @@
     initCameraTimestamps() {
       const tsEl = document.getElementById('cam-timestamp');
       setInterval(() => {
-        if (tsEl) {
+        if (tsEl && !document.hidden && document.body.getAttribute('data-active-view') === 'home') {
           const now = new Date();
           const timeStr = now.toLocaleTimeString('en-GB');
           tsEl.textContent = `CAM 01 • 1080P • ${timeStr}`;

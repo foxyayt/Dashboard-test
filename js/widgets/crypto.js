@@ -59,90 +59,35 @@
 
     async fetchKrakenFallback() {
       try {
-        const krakenUrl = 'https://api.kraken.com/0/public/Ticker?pair=XBTGBP,XBTUSD,ETHGBP,ETHUSD,SOLGBP,SOLUSD,XRPGBP,XRPUSD,DOGEUSD,ADAGBP';
-        const res = await NexusDataEngine.fetchWithCache(krakenUrl, {}, 60000);
-        if (res && res.result) {
-          const k = res.result;
-          // Transform Kraken format into standard structure
-          this.cryptoData = {
-            bitcoin: {
-              gbp: parseFloat((k.XXBTZGBP == null ? undefined : k.XXBTZGBP.c[0]) || 52000),
-              usd: parseFloat((k.XXBTZUSD == null ? undefined : k.XXBTZUSD.c[0]) || 68000),
-              eur: parseFloat((k.XXBTZEUR == null ? undefined : k.XXBTZEUR.c[0]) || 62000),
-              gbp_24h_change: 1.2,
-              usd_24h_change: 1.4
-            },
-            ethereum: {
-              gbp: parseFloat((k.XETHZGBP == null ? undefined : k.XETHZGBP.c[0]) || 2050),
-              usd: parseFloat((k.XETHZUSD == null ? undefined : k.XETHZUSD.c[0]) || 2650),
-              eur: parseFloat((k.XETHZEUR == null ? undefined : k.XETHZEUR.c[0]) || 2450),
-              gbp_24h_change: -0.5,
-              usd_24h_change: -0.3
-            },
-            solana: {
-              gbp: parseFloat((k.SOLGBP == null ? undefined : k.SOLGBP.c[0]) || 120),
-              usd: parseFloat((k.SOLUSD == null ? undefined : k.SOLUSD.c[0]) || 155),
-              eur: parseFloat((k.SOLEUR == null ? undefined : k.SOLEUR.c[0]) || 140),
-              gbp_24h_change: 3.4,
-              usd_24h_change: 3.6
-            },
-            ripple: {
-              gbp: parseFloat((k.XXRPZGBP == null ? undefined : k.XXRPZGBP.c[0]) || 0.42),
-              usd: parseFloat((k.XXRPZUSD == null ? undefined : k.XXRPZUSD.c[0]) || 0.55),
-              eur: parseFloat((k.XXRPZEUR == null ? undefined : k.XXRPZEUR.c[0]) || 0.50),
-              gbp_24h_change: 0.8,
-              usd_24h_change: 1.0
-            },
-            dogecoin: {
-              gbp: parseFloat((k.XDGUSD == null ? undefined : k.XDGUSD.c[0]) || 0.12) * 0.77,
-              usd: parseFloat((k.XDGUSD == null ? undefined : k.XDGUSD.c[0]) || 0.12),
-              eur: parseFloat((k.XDGUSD == null ? undefined : k.XDGUSD.c[0]) || 0.12) * 0.92,
-              gbp_24h_change: 2.1,
-              usd_24h_change: 2.3
-            },
-            cardano: {
-              gbp: parseFloat((k.ADAGBP == null ? undefined : k.ADAGBP.c[0]) || 0.28),
-              usd: parseFloat((k.ADAUSD == null ? undefined : k.ADAUSD.c[0]) || 0.36),
-              eur: parseFloat((k.ADAEUR == null ? undefined : k.ADAEUR.c[0]) || 0.33),
-              gbp_24h_change: -1.1,
-              usd_24h_change: -0.9
-            }
-          };
-          this.storePricePoints(this.cryptoData);
-          this.render();
-        }
+        const res = await NexusDataEngine.fetchWithCache('https://api.kraken.com/0/public/Ticker?pair=XBTGBP,XBTUSD,XBTEUR,ETHGBP,ETHUSD,ETHEUR', {}, 60000);
+        const pairs = res.result || {}, data = {};
+        [{id:'bitcoin',prefix:'XXBTZ'}, {id:'ethereum',prefix:'XETHZ'}].forEach(asset => {
+          data[asset.id] = {};
+          ['gbp','usd','eur'].forEach(currency => {
+            const ticker = pairs[asset.prefix + currency.toUpperCase()];
+            if (!ticker || !ticker.c) return;
+            const price = Number(ticker.c[0]), open = Number(ticker.o);
+            data[asset.id][currency] = price;
+            data[asset.id][currency + '_24h_change'] = open ? (price-open)/open*100 : null;
+          });
+        });
+        this.cryptoData = data; this.storePricePoints(data); this.render();
       } catch (e) {
-        console.error('[Crypto] Kraken fallback also failed:', e);
+        const el = document.getElementById('crypto-overview-list');
+        if (el) el.textContent = 'Crypto prices unavailable. Please try later.';
       }
     }
 
     storePricePoints(data) {
-      const curr = this.selectedCurrency;
       Object.keys(data).forEach(id => {
-        if (!this.historicalPoints.has(id)) {
-          // Initialize with simulated realistic points for sparkline
-          const base = data[id][curr] || 100;
-          const change = data[id][`${curr}_24h_change`] || 0;
-          const start = base * (1 - change / 100);
-          const pts = [
-            start,
-            start * 0.995,
-            start * 1.008,
-            start * 1.002,
-            start * 1.015,
-            start * 1.010,
-            base * 0.998,
-            base
-          ];
-          this.historicalPoints.set(id, pts);
-        } else {
-          const pts = this.historicalPoints.get(id);
-          const currentPrice = data[id][curr];
-          if (currentPrice && pts[pts.length - 1] !== currentPrice) {
-            pts.push(currentPrice);
-            if (pts.length > 20) pts.shift();
-          }
-        }
+        ['gbp','usd','eur'].forEach(currency => {
+          const key = id + ':' + currency, price = data[id][currency];
+          if (!Number.isFinite(price)) return;
+          const points = this.historicalPoints.get(key) || [];
+          if (points[points.length-1] !== price) points.push(price);
+          if (points.length > 20) points.shift();
+          this.historicalPoints.set(key, points);
+        });
       });
     }
 
@@ -169,11 +114,12 @@
         const item = this.cryptoData[id];
         const meta = assetMeta[id] || { symbol: id.toUpperCase().slice(0, 4), name: id, icon: '•' };
         const price = item[curr];
+        if (!Number.isFinite(price)) return;
         const change = item[`${curr}_24h_change`] || 0;
         const isUp = change >= 0;
         const chgClass = isUp ? 'up' : 'down';
         const chgSign = isUp ? '+' : '';
-        const history = this.historicalPoints.get(id) || [price, price];
+        const history = this.historicalPoints.get(id + ':' + curr) || [];
         const sparklineSvg = NexusCharts.renderSVGSparkline(history, isUp, 70, 24);
 
         // Overview Row
@@ -215,19 +161,19 @@
       if (tableBody) tableBody.innerHTML = tableRows.join('');
 
       // Render interactive chart on markets page for Bitcoin
-      if (this.cryptoData.bitcoin) {
+      if (this.cryptoData.bitcoin && document.body.getAttribute('data-active-view') === 'markets') {
         this.renderDetailChart('bitcoin');
       }
     }
 
     renderDetailChart(assetId = 'bitcoin') {
       const curr = this.selectedCurrency;
-      const history = this.historicalPoints.get(assetId) || [50000, 51000, 52400];
+      const history = this.historicalPoints.get(assetId + ':' + curr) || [];
       const points = history.map((val, idx) => ({ time: idx, price: val }));
       
       const titleEl = document.getElementById('chart-active-title');
       if (titleEl) {
-        titleEl.textContent = `${assetId.toUpperCase()} (${curr.toUpperCase()}) — INTERACTIVE PRICE TREND`;
+        titleEl.textContent = `${assetId.toUpperCase()} (${curr.toUpperCase()}) — OBSERVED THIS SESSION`;
       }
 
       NexusCharts.renderFinancialChart('market-detail-canvas', assetId, points);

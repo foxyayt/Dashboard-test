@@ -10,6 +10,7 @@
     constructor() {
       this.currentData = null;
       this.airQualityData = null;
+      this.requestVersion = 0;
       this.initEvents();
       this.initSearch();
     }
@@ -50,9 +51,10 @@
             region: 'Scotland',
             latitude: 55.8642,
             longitude: -4.2518,
-            timezone: 'auto'
+            timezone: 'Europe/London'
           });
           NexusUtils.showToast('Reset location to Glasgow, UK');
+          NexusDataEngine.emit('location_changed');
           this.fetchWeather();
         });
       }
@@ -74,6 +76,7 @@
             timezone: loc.timezone || 'auto'
           });
           NexusUtils.showToast(`Location updated to ${loc.name}, ${loc.country || ''}`);
+          NexusDataEngine.emit('location_changed');
           this.fetchWeather();
         } else {
           NexusUtils.showToast(`No locations found for "${query}"`);
@@ -85,6 +88,7 @@
     }
 
     async fetchWeather() {
+      const version = ++this.requestVersion;
       if (NexusDataEngine.isDemoMode) {
         this.renderDemoWeather();
         return;
@@ -101,7 +105,7 @@
       const tempUnit = NexusStorage.get('units.temperature', 'celsius');
       const windUnit = NexusStorage.get('units.windSpeed', 'mph');
 
-      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto${tempUnit === 'fahrenheit' ? '&temperature_unit=fahrenheit' : ''}${windUnit === 'kmh' ? '&wind_speed_unit=kmh' : windUnit === 'ms' ? '&wind_speed_unit=ms' : '&wind_speed_unit=mph'}`;
+      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,surface_pressure&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max&timezone=auto${tempUnit === 'fahrenheit' ? '&temperature_unit=fahrenheit' : ''}${windUnit === 'kmh' ? '&wind_speed_unit=kmh' : windUnit === 'ms' ? '&wind_speed_unit=ms' : '&wind_speed_unit=mph'}`;
       
       const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${loc.latitude}&longitude=${loc.longitude}&current=european_aqi,pm2_5,nitrogen_dioxide`;
 
@@ -111,13 +115,22 @@
           NexusDataEngine.fetchWithCache(aqiUrl, {}, 1800000).catch(() => null)
         ]);
 
+        if (version !== this.requestVersion) return;
+        if (weatherData.timezone && weatherData.timezone !== loc.timezone) {
+          NexusStorage.set('location.timezone', weatherData.timezone);
+          NexusDataEngine.emit('location_changed');
+        }
         this.currentData = weatherData;
         this.airQualityData = aqiData;
         this.render(weatherData, aqiData, loc);
+        const cached = NexusDataEngine.cache.get(weatherUrl);
+        NexusDataEngine.emit('weather_updated', { weather: weatherData, aqi: aqiData, stale: !NexusDataEngine.isOnline || !cached || Date.now() - cached.timestamp >= 600000 });
       } catch (err) {
+        if (version !== this.requestVersion) return;
         console.warn('[Weather] Live fetch failed:', err.message);
         const sub = document.getElementById('w-location-sub');
         if (sub) sub.textContent = `${loc.name} • Offline Stale Data`;
+        NexusDataEngine.emit('weather_unavailable');
       }
     }
 
@@ -163,14 +176,15 @@
       const humVal = document.getElementById('wm-humidity');
       const uvVal = document.getElementById('wm-uv');
 
-      const precipChance = (hourly.precipitation_probability && hourly.precipitation_probability.length > 0)
-        ? hourly.precipitation_probability[0]
-        : (curr.precipitation > 0 ? 100 : 10);
+      const now = NexusTime.current();
+      const currentHour = now ? now.localISO.slice(0, 13) + ':00' : curr.time;
+      const hourIndex = (hourly.time || []).indexOf(currentHour);
+      const precipChance = hourly.precipitation_probability && hourIndex >= 0 ? hourly.precipitation_probability[hourIndex] : null;
 
-      if (rainVal) rainVal.textContent = `${precipChance}%`;
+      if (rainVal) rainVal.textContent = precipChance == null ? '—' : `${precipChance}%`;
       if (windVal) windVal.textContent = `${Math.round(curr.wind_speed_10m)} ${windSym}`;
       if (humVal) humVal.textContent = `${curr.relative_humidity_2m}%`;
-      if (uvVal) uvVal.textContent = daily.uv_index_max ? daily.uv_index_max[0].toFixed(1) : '2.1';
+      if (uvVal) uvVal.textContent = daily.uv_index_max && daily.uv_index_max[0] != null ? daily.uv_index_max[0].toFixed(1) : '—';
 
       // Hourly Preview Strip in Overview
       this.renderHourlyStrip(hourly, unitSym);
@@ -184,9 +198,12 @@
       if (!container || !hourly.time) return;
 
       const items = [];
-      const count = Math.min(12, hourly.time.length);
+      const local = NexusTime.current();
+      const hour = local ? local.localISO.slice(0, 13) + ':00' : '';
+      const start = Math.max(0, hourly.time.indexOf(hour));
+      const count = Math.min(start + 12, hourly.time.length);
 
-      for (let i = 0; i < count; i++) {
+      for (let i = start; i < count; i++) {
         const timeStr = hourly.time[i].slice(11, 16);
         const temp = Math.round(hourly.temperature_2m[i]);
         const code = hourly.weather_code[i];
@@ -233,18 +250,18 @@
 
       if (appEl) appEl.textContent = `${Math.round(curr.apparent_temperature)}${unitSym}`;
       if (precEl) precEl.textContent = `${curr.precipitation || 0.0} mm`;
-      if (gustEl) gustEl.textContent = `${Math.round(curr.wind_speed_10m * 1.35)} ${windSym}`;
-      if (presEl) presEl.textContent = `${Math.round(curr.surface_pressure || 1013)} hPa`;
+      if (gustEl) gustEl.textContent = curr.wind_gusts_10m == null ? 'Unavailable' : Math.round(curr.wind_gusts_10m) + ' ' + windSym;
+      if (presEl) presEl.textContent = curr.surface_pressure == null ? 'Unavailable' : Math.round(curr.surface_pressure) + ' hPa';
 
       // Air Quality
       if (aqi && aqi.current) {
-        const euAqi = aqi.current.european_aqi || 22;
-        const desc = NexusUtils.describeAQI(euAqi);
+        const euAqi = aqi.current.european_aqi;
+        const desc = euAqi == null ? {label:'Unavailable', color:'inherit'} : NexusUtils.describeAQI(euAqi);
         if (aqiEl) {
-          aqiEl.textContent = `${desc.label} (${euAqi})`;
+          aqiEl.textContent = euAqi == null ? 'Unavailable' : desc.label + ' (' + euAqi + ')';
           aqiEl.style.color = desc.color;
         }
-        if (pm25El) pm25El.textContent = `${aqi.current.pm2_5 ? aqi.current.pm2_5.toFixed(1) : 8.5} µg/m³`;
+        if (pm25El) pm25El.textContent = aqi.current.pm2_5 == null ? 'Unavailable' : `${aqi.current.pm2_5.toFixed(1)} µg/m³`;
       }
 
       // Sunrise & Sunset & Daylight calculation
@@ -253,16 +270,17 @@
         const setTime = daily.sunset[0].slice(11, 16);
         if (sunEl) sunEl.textContent = `${riseTime} / ${setTime}`;
 
-        const setDate = new Date(daily.sunset[0]);
+        // Open-Meteo local timestamps have no offset; never parse them in the tablet's zone.
+        const setDate = new Date(daily.sunset[0] + 'Z');
         const now = new Date();
-        const diffHrs = (setDate - now) / (1000 * 60 * 60);
+        const diffHrs = (setDate.getTime() - (weather.utc_offset_seconds || 0) * 1000 - now.getTime()) / (1000 * 60 * 60);
         if (daylEl) {
           daylEl.textContent = diffHrs > 0 ? `${diffHrs.toFixed(1)} hrs left` : 'Night';
         }
       }
 
       // Render 24-Hour Canvas Chart
-      NexusCharts.renderWeatherHourlyChart('weather-hourly-canvas', {
+      if (document.body.getAttribute('data-active-view') === 'weather') NexusCharts.renderWeatherHourlyChart('weather-hourly-canvas', {
         temperatures: hourly.temperature_2m,
         precipitation: hourly.precipitation_probability,
         times: hourly.time
@@ -282,7 +300,7 @@
 
       for (let i = 0; i < count; i++) {
         const date = new Date(daily.time[i]);
-        const dayLabel = i === 0 ? 'Today' : daysOfWeek[date.getDay()];
+        const dayLabel = i === 0 ? 'Today' : daysOfWeek[date.getUTCDay()];
         const code = daily.weather_code ? daily.weather_code[i] : 2;
         const icon = NexusUtils.translateWeatherCode(code).icon;
         const maxT = Math.round(daily.temperature_2m_max[i]);

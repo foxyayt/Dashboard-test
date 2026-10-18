@@ -14,12 +14,12 @@
       this.spaceNews = [];
 
       this.worldCities = [
-        { name: 'Glasgow / London', tz: 'Europe/London', label: 'BST / UTC+1' },
-        { name: 'New York', tz: 'America/New_York', label: 'EDT / UTC-4' },
+        { name: 'Glasgow / London', tz: 'Europe/London', label: 'Europe/London' },
+        { name: 'New York', tz: 'America/New_York', label: 'America/New_York' },
         { name: 'Tokyo', tz: 'Asia/Tokyo', label: 'JST / UTC+9' },
         { name: 'Dubai', tz: 'Asia/Dubai', label: 'GST / UTC+4' },
-        { name: 'Sydney', tz: 'Australia/Sydney', label: 'AEDT / UTC+11' },
-        { name: 'San Francisco', tz: 'America/Los_Angeles', label: 'PDT / UTC-7' }
+        { name: 'Sydney', tz: 'Australia/Sydney', label: 'Australia/Sydney' },
+        { name: 'San Francisco', tz: 'America/Los_Angeles', label: 'America/Los_Angeles' }
       ];
 
       this.initEvents();
@@ -53,7 +53,7 @@
 
     initWorldClocks() {
       this.renderWorldClocks();
-      setInterval(() => this.renderWorldClocks(), 1000);
+      setInterval(() => { if (!document.hidden && document.body.getAttribute('data-active-view') === 'world') this.renderWorldClocks(); }, 60000);
     }
 
     renderWorldClocks() {
@@ -69,8 +69,7 @@
             timeZone: city.tz,
             hour12: is12Hour,
             hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
+            minute: '2-digit'
           });
 
           return `
@@ -116,7 +115,9 @@
         }
       } catch (err) {
         console.warn('[Earthquakes] USGS fetch failed:', err.message);
-        this.renderDemoEarthquakes();
+        ['eqk-overview-list','quake-full-list'].forEach(id => {
+          const el = document.getElementById(id); if (el) el.textContent = 'USGS data unavailable. Please try later.';
+        });
       }
     }
 

@@ -17,6 +17,8 @@
       this.lastSyncTime = null;
       this.isDemoMode = false;
 
+      this.pollTimer = null;
+
       this.initNetworkListeners();
       this.initVisibilityListeners();
     }
@@ -44,7 +46,6 @@
           this.pauseIntervals();
         } else {
           this.resumeIntervals();
-          this.refreshAll();
         }
       });
     }
@@ -113,33 +114,26 @@
       // Create Request with Timeout
       const fetchPromise = (async () => {
         const timeoutMs = options.timeout || 9000;
-        let controller = null;
-        let timeoutId = null;
-
-        if (window.AbortController) {
-          controller = new AbortController();
-          timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-        }
-
         try {
-          const fetchOptions = Object.assign({}, options, {
-            signal: controller ? controller.signal : undefined
+          // XHR has a real timeout even on WebViews without AbortController.
+          const data = await new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.timeout = timeoutMs;
+            xhr.onload = () => {
+              if (xhr.status < 200 || xhr.status >= 300) { reject(new Error('HTTP ' + xhr.status)); return; }
+              try { resolve(JSON.parse(xhr.responseText)); } catch (e) { reject(e); }
+            };
+            xhr.onerror = () => reject(new Error('Network unavailable'));
+            xhr.ontimeout = () => reject(new Error('Request timed out'));
+            xhr.send();
           });
-
-          const res = await fetch(url, fetchOptions);
-          if (timeoutId) clearTimeout(timeoutId);
-
-          if (!res.ok) {
-            throw new Error(`HTTP Error: ${res.status} ${res.statusText}`);
-          }
-
-          const data = await res.json();
           this.cache.set(cacheKey, { timestamp: Date.now(), data });
+          while (this.cache.size > 40) this.cache.delete(this.cache.keys().next().value);
           this.lastSyncTime = new Date();
           this.updateSyncUI();
           return data;
         } catch (err) {
-          if (timeoutId) clearTimeout(timeoutId);
           console.warn(`[DataEngine] Request failed for ${url}:`, err.message);
           
           // Return stale cache if available as fallback
@@ -166,41 +160,51 @@
 
     // Schedule Polling Timers
     registerPoller(name, fetchFn, intervalMs) {
-      // Clear existing
-      if (this.intervals.has(name)) {
-        clearInterval(this.intervals.get(name));
+      this.intervals.set(name, { fetchFn, intervalMs: Math.max(intervalMs, 60000), last: 0, running: false });
+      this.runPollers();
+      if (!this.pollTimer) this.pollTimer = setInterval(() => this.runPollers(), 30000);
+    }
+
+    pollerVisible(name) {
+      const view = document.body.getAttribute('data-active-view') || 'overview';
+      if (name === 'weather') return view === 'overview' || view === 'weather';
+      if (view === 'overview' && document.body.classList.contains('show-all-widgets')) {
+        const widgetId = {iss:'world', earthquakes:'world', spacenews:'world'}[name] || name;
+        const widget = document.getElementById('widget-' + widgetId);
+        return !!widget && !widget.classList.contains('hidden');
       }
+      if (name === 'crypto' || name === 'markets') return view === 'markets';
+      if (name === 'iss' || name === 'earthquakes' || name === 'spacenews') return view === 'world';
+      return false;
+    }
 
-      // Run immediately
-      fetchFn();
-
-      // Schedule
-      const id = setInterval(() => {
-        if (!document.hidden) {
-          fetchFn();
-        }
-      }, intervalMs);
-
-      this.intervals.set(name, id);
+    runPollers(force = false) {
+      if (document.hidden) return;
+      this.intervals.forEach((poller, name) => {
+        if (poller.running || !this.pollerVisible(name) || (!force && Date.now() - poller.last < poller.intervalMs)) return;
+        poller.last = Date.now(); poller.running = true;
+        Promise.resolve().then(poller.fetchFn).catch(() => {}).then(() => { poller.running = false; });
+      });
     }
 
     pauseIntervals() {
-      this.intervals.forEach((id) => clearInterval(id));
+      clearInterval(this.pollTimer);
+      this.pollTimer = null;
     }
 
     resumeIntervals() {
-      // Re-trigger registered pollers
-      this.emit('resume_polling');
+      this.runPollers();
+      if (!this.pollTimer) this.pollTimer = setInterval(() => this.runPollers(), 30000);
     }
 
     refreshAll() {
-      NexusUtils.showToast('Synchronizing all live feeds...');
+      NexusUtils.showToast('Refreshing this view…');
       const refreshBtn = document.getElementById('btn-manual-refresh');
       if (refreshBtn) {
         refreshBtn.style.animation = 'spin 0.8s linear';
         setTimeout(() => refreshBtn.style.animation = '', 800);
       }
-      this.emit('manual_refresh');
+      this.runPollers(true);
     }
 
     setDemoMode(enabled) {
@@ -216,7 +220,6 @@
           NexusUtils.showToast('Live Mode Restored (Genuine APIs)');
         }
       }
-      this.emit('demo_mode_changed', enabled);
       this.refreshAll();
     }
   }

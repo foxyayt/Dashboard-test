@@ -45,7 +45,9 @@
         this.render();
       } catch (err) {
         console.warn('[FX] Frankfurter API fetch failed:', err.message);
-        this.renderDemoRates();
+        ['fx-gbp-usd','fx-gbp-eur','fx-eur-usd','fx-gbp-jpy'].forEach(id => {
+          const el = document.getElementById(id); if (el) el.textContent = 'Unavailable';
+        });
       }
     }
 

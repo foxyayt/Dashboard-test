@@ -202,15 +202,15 @@
         clockFmt.value = NexusStorage.get('clock.format', '24');
         clockFmt.addEventListener('change', (e) => {
           NexusStorage.set('clock.format', e.target.value);
-          NexusHeaderWidget.tick();
+          NexusHeaderWidget.restartClock();
         });
       }
 
       if (clockSecs) {
-        clockSecs.value = String(NexusStorage.get('clock.showSeconds', true));
+        clockSecs.value = String(NexusStorage.get('clock.showSeconds', false));
         clockSecs.addEventListener('change', (e) => {
           NexusStorage.set('clock.showSeconds', e.target.value === 'true');
-          NexusHeaderWidget.tick();
+          NexusHeaderWidget.restartClock();
         });
       }
 

@@ -116,5 +116,6 @@
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6), 0 0 12px var(--accent-glow-subtle);
   display: flex;
   align-items: center;
+  grid-gap: 8px;
   gap: 8px;
 }

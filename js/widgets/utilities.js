@@ -217,8 +217,8 @@
           swStart = Date.now() - swElapsed;
           swTimer = setInterval(() => {
             swElapsed = Date.now() - swStart;
-            if (swDigits) swDigits.textContent = formatSw(swElapsed);
-          }, 25);
+            if (swDigits && !document.hidden && document.body.getAttribute('data-active-view') === 'tools') swDigits.textContent = formatSw(swElapsed);
+          }, 100);
           swStartBtn.textContent = 'STOP';
         } else {
           clearInterval(swTimer);

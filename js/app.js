@@ -44,7 +44,16 @@
       }
 
       this.currentView = viewName;
+      if (viewName !== 'overview') {
+        document.body.classList.remove('calm-mode');
+        const calmButton = document.getElementById('home-calm');
+        if (calmButton) { calmButton.textContent = 'Clock mode'; calmButton.setAttribute('aria-pressed', 'false'); }
+      }
       document.body.setAttribute('data-active-view', viewName);
+      NexusDataEngine.runPollers();
+      if (window.NexusHeaderWidget) NexusHeaderWidget.restartClock();
+      if (viewName === 'overview' && window.NexusHome) NexusHome.tick();
+      if (viewName === 'world' && window.NexusWorldWidget) NexusWorldWidget.renderWorldClocks();
 
       // Update View Panes
       document.querySelectorAll('.view-panel').forEach(pane => {
@@ -168,6 +177,6 @@
   // Bootstrap when DOM ready
   document.addEventListener('DOMContentLoaded', () => {
     window.NexusApp = new NexusApp();
-    NexusUtils.showToast('NEXUS OS Initialized • All Systems Operational');
+    // Home is ready; avoid a toast covering the dashboard.
   });
 })(window);

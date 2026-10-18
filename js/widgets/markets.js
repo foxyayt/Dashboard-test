@@ -131,14 +131,8 @@
     }
 
     refreshMarkets() {
-      // Simulate micro price movements for genuine ticker tape dynamics
-      this.indicesData.forEach(idx => {
-        const drift = (Math.random() - 0.48) * 0.4;
-        idx.value += drift;
-        idx.change += drift;
-        idx.pct = (idx.change / idx.value) * 100;
-      });
-
+      // This legacy stock catalog is a labelled sample, never a live quote feed.
+      this.indicesData.forEach(idx => { idx.status = 'SAMPLE'; });
       this.render();
     }
 

@@ -22,12 +22,14 @@
 .sys-brand-cluster {
   display: flex;
   align-items: center;
+  grid-gap: 12px;
   gap: 12px;
 }
 
 .sys-logo-wrapper {
   display: flex;
   align-items: center;
+  grid-gap: 10px;
   gap: 10px;
   cursor: pointer;
 }
@@ -69,6 +71,7 @@
 .sys-status-badge {
   display: flex;
   align-items: center;
+  grid-gap: 6px;
   gap: 6px;
   padding: 4px 8px;
   background: rgba(16, 185, 129, 0.1);
@@ -166,6 +169,7 @@
 .sys-date-row {
   display: flex;
   align-items: center;
+  grid-gap: 6px;
   gap: 6px;
   font-family: var(--font-mono);
   font-size: 0.72rem;
@@ -187,6 +191,7 @@
 .sys-actions-cluster {
   display: flex;
   align-items: center;
+  grid-gap: 10px;
   gap: 10px;
 }
 
@@ -194,6 +199,7 @@
 .header-weather-pill {
   display: flex;
   align-items: center;
+  grid-gap: 8px;
   gap: 8px;
   padding: 4px 10px;
   background: rgba(255, 255, 255, 0.04);
@@ -233,6 +239,7 @@
 .sys-sync-info {
   display: flex;
   align-items: center;
+  grid-gap: 4px;
   gap: 4px;
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -246,6 +253,7 @@
 .sys-control-btns {
   display: flex;
   align-items: center;
+  grid-gap: 6px;
   gap: 6px;
 }
 
@@ -304,6 +312,7 @@
 .ticker-label {
   display: flex;
   align-items: center;
+  grid-gap: 6px;
   gap: 6px;
   padding: 0 12px;
   height: 100%;
@@ -337,6 +346,7 @@
 .ticker-track {
   display: flex;
   align-items: center;
+  grid-gap: 22px;
   gap: 22px;
   padding-left: 14px;
   white-space: nowrap;
@@ -356,6 +366,7 @@
 .ticker-item {
   display: inline-flex;
   align-items: center;
+  grid-gap: 6px;
   gap: 6px;
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -432,6 +443,7 @@
 .ph-left {
   display: flex;
   align-items: center;
+  grid-gap: 14px;
   gap: 14px;
 }
 
@@ -469,6 +481,7 @@
 .widgets-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
+  grid-gap: 12px;
   gap: 12px;
   padding-bottom: 10px;
 }
@@ -548,6 +561,7 @@
   justify-content: space-around;
   width: 100%;
   max-width: 1000px;
+  grid-gap: 6px;
   gap: 6px;
 }
 
@@ -564,6 +578,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  grid-gap: 4px;
   gap: 4px;
   cursor: pointer;
   transition: all var(--trans-fast);

@@ -247,7 +247,7 @@
       const resetBtn = document.getElementById('btn-reset-defaults');
 
       // Export JSON File Download
-      exportBtn?.addEventListener('click', () => {
+      exportBtn && exportBtn.addEventListener('click', () => {
         const json = NexusStorage.exportConfig();
         const blob = new Blob([json], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -262,10 +262,10 @@
       });
 
       // Import JSON File
-      importTrigger?.addEventListener('click', () => importFileInput?.click());
+      importTrigger && importTrigger.addEventListener('click', () => importFileInput && importFileInput.click());
 
-      importFileInput?.addEventListener('change', (e) => {
-        const file = e.target.files?.[0];
+      importFileInput && importFileInput.addEventListener('change', (e) => {
+        const file = (e.target.files ? e.target.files[0] : undefined);
         if (!file) return;
 
         const reader = new FileReader();
@@ -282,7 +282,7 @@
       });
 
       // Reset Defaults
-      resetBtn?.addEventListener('click', () => {
+      resetBtn && resetBtn.addEventListener('click', () => {
         if (confirm('Reset NEXUS OS to factory default settings?')) {
           NexusStorage.resetDefaults();
           NexusUtils.showToast('System reset to defaults. Reloading...');

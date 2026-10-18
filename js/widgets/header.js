@@ -74,37 +74,37 @@
 
     initActionButtons() {
       // Manual Refresh Button
-      document.getElementById('btn-manual-refresh')?.addEventListener('click', () => {
+      document.getElementById('btn-manual-refresh') && document.getElementById('btn-manual-refresh').addEventListener('click', () => {
         NexusDataEngine.refreshAll();
       });
 
       // Demo Mode Toggle
-      document.getElementById('btn-demo-mode')?.addEventListener('click', () => {
+      document.getElementById('btn-demo-mode') && document.getElementById('btn-demo-mode').addEventListener('click', () => {
         const current = NexusDataEngine.isDemoMode;
         NexusDataEngine.setDemoMode(!current);
       });
 
       // Fullscreen Toggle
-      document.getElementById('btn-fullscreen')?.addEventListener('click', () => {
+      document.getElementById('btn-fullscreen') && document.getElementById('btn-fullscreen').addEventListener('click', () => {
         NexusUtils.toggleFullscreen();
       });
 
       // Quick Settings Button
-      document.getElementById('btn-quick-settings')?.addEventListener('click', () => {
+      document.getElementById('btn-quick-settings') && document.getElementById('btn-quick-settings').addEventListener('click', () => {
         if (window.NexusApp) {
           window.NexusApp.switchView('settings');
         }
       });
 
       // Clock Tap -> Switch to World Time
-      document.getElementById('header-clock-trigger')?.addEventListener('click', () => {
+      document.getElementById('header-clock-trigger') && document.getElementById('header-clock-trigger').addEventListener('click', () => {
         if (window.NexusApp) {
           window.NexusApp.switchView('world');
         }
       });
 
       // Header Weather Pill Tap -> Switch to Weather Centre
-      document.getElementById('header-weather-pill')?.addEventListener('click', () => {
+      document.getElementById('header-weather-pill') && document.getElementById('header-weather-pill').addEventListener('click', () => {
         if (window.NexusApp) {
           window.NexusApp.switchView('weather');
         }

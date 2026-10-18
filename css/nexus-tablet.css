@@ -1,0 +1,61 @@
+/* Readable touch layout for low-resolution 10-inch kiosk screens. */
+.nexus-main { min-height: 0; }
+.no-flex-gap .dock-item + .dock-item { margin-left: 6px; }
+.no-flex-gap .wh-actions > * + *,
+.no-flex-gap .sys-action-buttons > * + *,
+.no-flex-gap .hourly-cards-scroll > * + * { margin-left: 8px; }
+.no-flex-gap .wh-left > * + *,
+.no-flex-gap .ph-left > * + * { margin-left: 10px; }
+.no-flex-gap .sys-actions-cluster > * + *,
+.no-flex-gap .sys-action-btns > * + *,
+.no-flex-gap .crypto-currency-selector > * + *,
+.no-flex-gap .weather-search-bar > * + * { margin-left: 8px; }
+.no-flex-gap .markets-column > * + * { margin-top: 14px; }
+
+@media (max-width: 1280px), (pointer: coarse) {
+  html { font-size: 18px; }
+  body { --touch-target-min: 48px; --header-height: 76px; --dock-height: 82px; --ticker-height: 38px; }
+  body { --text-muted: #bdc9da; --text-dim: #a5b3c7; --border-subtle: rgba(255,255,255,.2); }
+  button, input, select { min-height: 48px; font-size: 16px; }
+  .curr-btn, .t-tab, .filter-pill, .btn-primary-mini, .btn-secondary-mini,
+  .qr-quick-btn, .dens-btn, .chart-range-btn { font-size: 16px; }
+  button { touch-action: manipulation; }
+  input[type="checkbox"] { width: 26px; height: 26px; min-height: 26px; }
+  .widgets-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-gap: 16px; }
+  .widgets-grid > .widget-card { grid-column: span 1; min-width: 0; }
+  .widgets-grid > .widget-tools { grid-column: 1 / -1; }
+  .widget-header { min-height: 72px; padding: 12px; flex-wrap: wrap; }
+  .wh-title, .sec-head h3 { font-size: 1rem; letter-spacing: .02em; }
+  .wh-subtitle, .sec-meta, .wh-badge { font-size: .78rem; }
+  .wh-btn { width: 48px; height: 48px; flex-shrink: 0; }
+  .widget-body { padding: 16px; }
+  .dock-item { height: 66px; min-width: 80px; }
+  .dock-label { font-size: .78rem; letter-spacing: .02em; }
+  .dock-icon svg { width: 26px; height: 26px; }
+  .dock-inner { overflow-x: auto; justify-content: space-between; max-width: none; }
+  .dock-inner { touch-action: pan-x; -webkit-overflow-scrolling: touch; }
+  .dock-item { flex: 1 0 80px; }
+  .nav-back-btn { font-size: .9rem; }
+  .page-header, .ph-left { flex-wrap: wrap; }
+  .ph-right { max-width: 100%; margin-top: 8px; }
+  .tools-subtab-bar { max-width: 100%; overflow-x: auto; }
+  .t-tab { flex-shrink: 0; }
+  .m-label, .hmc-time, .hmc-rain, .eq-name, .idx-name { font-size: .8rem; }
+  .crypto-row, .eq-item { min-height: 64px; }
+  .system-bar { padding: 0 12px; }
+  .sys-version, .sys-status-badge, .sys-weather-details { display: none; }
+  .ambient-bg { display: none; }
+  .widget-card, .section-card { box-shadow: none; }
+  .view-panel { animation: none; }
+  .markets-full-layout { grid-template-columns: minmax(0, 1fr); }
+  .nexus-table { font-size: .85rem; }
+  .section-card { overflow-x: auto; }
+}
+@media (max-width: 850px) {
+  .widgets-grid { grid-template-columns: minmax(0, 1fr); }
+  .header-weather-pill, .sys-titles { display: none; }
+  .sys-clock-digits { font-size: 1.6rem; }
+  .system-bar { flex-wrap: wrap; height: auto; }
+  .seven-day-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .whb-metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

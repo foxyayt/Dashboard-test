@@ -78,8 +78,8 @@
       if (!input || !usdOut || !eurOut) return;
       const amount = parseFloat(input.value) || 0;
 
-      const usdRate = this.rates?.USD || 1.3042;
-      const eurRate = this.rates?.EUR || 1.2005;
+      const usdRate = (this.rates == null ? undefined : this.rates.USD) || 1.3042;
+      const eurRate = (this.rates == null ? undefined : this.rates.EUR) || 1.2005;
 
       usdOut.textContent = `$${(amount * usdRate).toFixed(2)}`;
       eurOut.textContent = `€${(amount * eurRate).toFixed(2)}`;

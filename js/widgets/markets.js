@@ -97,24 +97,24 @@
       const btnFtse = document.getElementById('btn-chart-ftse');
 
       const setToggle = (activeBtn, fn) => {
-        [btnBtc, btnEth, btnFtse].forEach(b => b?.classList.remove('active'));
-        activeBtn?.classList.add('active');
+        [btnBtc, btnEth, btnFtse].forEach(b => b && b.classList.remove('active'));
+        activeBtn && activeBtn.classList.add('active');
         fn();
       };
 
-      btnBtc?.addEventListener('click', () => {
+      btnBtc && btnBtc.addEventListener('click', () => {
         setToggle(btnBtc, () => {
           if (window.NexusCryptoWidget) window.NexusCryptoWidget.renderDetailChart('bitcoin');
         });
       });
 
-      btnEth?.addEventListener('click', () => {
+      btnEth && btnEth.addEventListener('click', () => {
         setToggle(btnEth, () => {
           if (window.NexusCryptoWidget) window.NexusCryptoWidget.renderDetailChart('ethereum');
         });
       });
 
-      btnFtse?.addEventListener('click', () => {
+      btnFtse && btnFtse.addEventListener('click', () => {
         setToggle(btnFtse, () => {
           const titleEl = document.getElementById('chart-active-title');
           if (titleEl) titleEl.textContent = 'FTSE 100 INDEX — INTERACTIVE PERFORMANCE';

@@ -25,8 +25,8 @@
         NexusUtils.showToast(`Thermostat target set to ${this.targetTemp.toFixed(1)}°C`);
       };
 
-      upBtn?.addEventListener('click', () => updateTarget(0.5));
-      downBtn?.addEventListener('click', () => updateTarget(-0.5));
+      upBtn && upBtn.addEventListener('click', () => updateTarget(0.5));
+      downBtn && downBtn.addEventListener('click', () => updateTarget(-0.5));
     }
 
     initSwitches() {
@@ -36,7 +36,7 @@
         const stateEl = card.querySelector('.sw-state');
         const nameEl = card.querySelector('.sw-name');
 
-        checkbox?.addEventListener('change', (e) => {
+        checkbox && checkbox.addEventListener('change', (e) => {
           const isChecked = e.target.checked;
           const name = nameEl ? nameEl.textContent : 'Device';
           if (stateEl) {

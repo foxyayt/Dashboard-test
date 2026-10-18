@@ -177,11 +177,11 @@
         updatePomoDisplay();
       };
 
-      miniStartBtn?.addEventListener('click', togglePomo);
-      miniResetBtn?.addEventListener('click', resetPomo);
-      fullToggleBtn?.addEventListener('click', togglePomo);
-      fullResetBtn?.addEventListener('click', resetPomo);
-      fullBreakBtn?.addEventListener('click', () => {
+      miniStartBtn && miniStartBtn.addEventListener('click', togglePomo);
+      miniResetBtn && miniResetBtn.addEventListener('click', resetPomo);
+      fullToggleBtn && fullToggleBtn.addEventListener('click', togglePomo);
+      fullResetBtn && fullResetBtn.addEventListener('click', resetPomo);
+      fullBreakBtn && fullBreakBtn.addEventListener('click', () => {
         clearInterval(pomoInterval);
         pomoRunning = false;
         isBreak = true;
@@ -211,7 +211,7 @@
         return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}.${String(centis).padStart(2, '0')}`;
       };
 
-      swStartBtn?.addEventListener('click', () => {
+      swStartBtn && swStartBtn.addEventListener('click', () => {
         swRunning = !swRunning;
         if (swRunning) {
           swStart = Date.now() - swElapsed;
@@ -226,7 +226,7 @@
         }
       });
 
-      swLapBtn?.addEventListener('click', () => {
+      swLapBtn && swLapBtn.addEventListener('click', () => {
         if (swRunning && swLapsBox) {
           laps.push(swElapsed);
           const lapItem = document.createElement('div');
@@ -237,7 +237,7 @@
         }
       });
 
-      swResetBtn?.addEventListener('click', () => {
+      swResetBtn && swResetBtn.addEventListener('click', () => {
         clearInterval(swTimer);
         swRunning = false;
         swElapsed = 0;
@@ -277,7 +277,7 @@
         });
       });
 
-      cdStartBtn?.addEventListener('click', () => {
+      cdStartBtn && cdStartBtn.addEventListener('click', () => {
         cdRunning = !cdRunning;
         if (cdRunning) {
           cdTimer = setInterval(() => {
@@ -298,7 +298,7 @@
         }
       });
 
-      cdResetBtn?.addEventListener('click', () => {
+      cdResetBtn && cdResetBtn.addEventListener('click', () => {
         clearInterval(cdTimer);
         cdRunning = false;
         cdRemaining = cdTotalSecs;
@@ -317,9 +317,9 @@
       const mortSub = document.getElementById('mort-interest-sub');
 
       const calcMortgage = () => {
-        const P = parseFloat(mortLoan?.value) || 0;
-        const annualRate = (parseFloat(mortRate?.value) || 0) / 100;
-        const years = parseFloat(mortTerm?.value) || 0;
+        const P = parseFloat((mortLoan == null ? undefined : mortLoan.value)) || 0;
+        const annualRate = (parseFloat((mortRate == null ? undefined : mortRate.value)) || 0) / 100;
+        const years = parseFloat((mortTerm == null ? undefined : mortTerm.value)) || 0;
 
         if (P <= 0 || annualRate <= 0 || years <= 0) return;
 
@@ -333,7 +333,7 @@
         if (mortSub) mortSub.textContent = `Total Interest: £${totalInterest.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       };
 
-      [mortLoan, mortRate, mortTerm].forEach(el => el?.addEventListener('input', calcMortgage));
+      [mortLoan, mortRate, mortTerm].forEach(el => el && el.addEventListener('input', calcMortgage));
 
       // Compound Interest Calculator
       const ciInit = document.getElementById('ci-initial');
@@ -344,10 +344,10 @@
       const ciSub = document.getElementById('ci-contributions-sub');
 
       const calcCompoundInterest = () => {
-        const P = parseFloat(ciInit?.value) || 0;
-        const PMT = parseFloat(ciMonth?.value) || 0;
-        const r = (parseFloat(ciRate?.value) || 0) / 100 / 12;
-        const n = (parseFloat(ciYears?.value) || 0) * 12;
+        const P = parseFloat((ciInit == null ? undefined : ciInit.value)) || 0;
+        const PMT = parseFloat((ciMonth == null ? undefined : ciMonth.value)) || 0;
+        const r = (parseFloat((ciRate == null ? undefined : ciRate.value)) || 0) / 100 / 12;
+        const n = (parseFloat((ciYears == null ? undefined : ciYears.value)) || 0) * 12;
 
         if (n <= 0) return;
 
@@ -365,7 +365,7 @@
         if (ciSub) ciSub.textContent = `Total Invested: £${totalInvested.toLocaleString('en-GB', { minimumFractionDigits: 0 })} • Growth: £${growth.toLocaleString('en-GB', { minimumFractionDigits: 0 })}`;
       };
 
-      [ciInit, ciMonth, ciRate, ciYears].forEach(el => el?.addEventListener('input', calcCompoundInterest));
+      [ciInit, ciMonth, ciRate, ciYears].forEach(el => el && el.addEventListener('input', calcCompoundInterest));
 
       // Percentage & VAT Calculator
       const pctAmt = document.getElementById('pct-amount');
@@ -375,8 +375,8 @@
       const pctSub = document.getElementById('pct-sub');
 
       const calcPercentage = () => {
-        const amt = parseFloat(pctAmt?.value) || 0;
-        const rate = parseFloat(pctRate?.value) || 0;
+        const amt = parseFloat((pctAmt == null ? undefined : pctAmt.value)) || 0;
+        const rate = parseFloat((pctRate == null ? undefined : pctRate.value)) || 0;
         const pVal = amt * (rate / 100);
 
         if (pctVal) pctVal.textContent = `£${pVal.toFixed(2)}`;
@@ -384,7 +384,7 @@
         if (pctSub) pctSub.textContent = `£${(amt - pVal).toFixed(2)}`;
       };
 
-      [pctAmt, pctRate].forEach(el => el?.addEventListener('input', calcPercentage));
+      [pctAmt, pctRate].forEach(el => el && el.addEventListener('input', calcPercentage));
     }
 
     /* 5. Notes & Scratchpad and To-Do List */
@@ -409,9 +409,9 @@
         }
       };
 
-      miniNotes?.addEventListener('input', (e) => saveNotes(e.target.value));
-      fullNotes?.addEventListener('input', (e) => saveNotes(e.target.value));
-      clearNotesBtn?.addEventListener('click', () => {
+      miniNotes && miniNotes.addEventListener('input', (e) => saveNotes(e.target.value));
+      fullNotes && fullNotes.addEventListener('input', (e) => saveNotes(e.target.value));
+      clearNotesBtn && clearNotesBtn.addEventListener('click', () => {
         saveNotes('');
         NexusUtils.showToast('Notes cleared');
       });
@@ -459,7 +459,7 @@
       };
 
       const addTodo = () => {
-        const text = todoInput?.value.trim();
+        const text = (todoInput ? todoInput.value.trim() : undefined);
         if (!text) return;
         todos.push({ id: Date.now(), text, done: false });
         NexusStorage.set('todos', todos);
@@ -467,8 +467,8 @@
         renderTodos();
       };
 
-      todoAddBtn?.addEventListener('click', addTodo);
-      todoInput?.addEventListener('keydown', (e) => {
+      todoAddBtn && todoAddBtn.addEventListener('click', addTodo);
+      todoInput && todoInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') addTodo();
       });
 
@@ -493,7 +493,7 @@
         outputBox.innerHTML = svg;
       };
 
-      input?.addEventListener('input', (e) => generateQR(e.target.value.trim()));
+      input && input.addEventListener('input', (e) => generateQR(e.target.value.trim()));
 
       presets.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -504,7 +504,7 @@
       });
 
       // Initial render
-      generateQR(input?.value || 'https://open-meteo.com');
+      generateQR((input == null ? undefined : input.value) || 'https://open-meteo.com');
     }
 
     /**

@@ -123,8 +123,8 @@
           const items = Array.from(xml.querySelectorAll('item')).slice(0, 6);
 
           const articles = items.map(item => ({
-            title: item.querySelector('title')?.textContent || 'UK News Headline',
-            url: item.querySelector('link')?.textContent || 'https://bbc.co.uk/news',
+            title: (item.querySelector('title') || {}).textContent || 'UK News Headline',
+            url: (item.querySelector('link') || {}).textContent || 'https://bbc.co.uk/news',
             source: 'BBC News UK',
             time: item.querySelector('pubDate') ? new Date(item.querySelector('pubDate').textContent).getTime() : Date.now()
           }));

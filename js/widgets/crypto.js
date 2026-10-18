@@ -66,44 +66,44 @@
           // Transform Kraken format into standard structure
           this.cryptoData = {
             bitcoin: {
-              gbp: parseFloat(k.XXBTZGBP?.c[0] || 52000),
-              usd: parseFloat(k.XXBTZUSD?.c[0] || 68000),
-              eur: parseFloat(k.XXBTZEUR?.c[0] || 62000),
+              gbp: parseFloat((k.XXBTZGBP == null ? undefined : k.XXBTZGBP.c[0]) || 52000),
+              usd: parseFloat((k.XXBTZUSD == null ? undefined : k.XXBTZUSD.c[0]) || 68000),
+              eur: parseFloat((k.XXBTZEUR == null ? undefined : k.XXBTZEUR.c[0]) || 62000),
               gbp_24h_change: 1.2,
               usd_24h_change: 1.4
             },
             ethereum: {
-              gbp: parseFloat(k.XETHZGBP?.c[0] || 2050),
-              usd: parseFloat(k.XETHZUSD?.c[0] || 2650),
-              eur: parseFloat(k.XETHZEUR?.c[0] || 2450),
+              gbp: parseFloat((k.XETHZGBP == null ? undefined : k.XETHZGBP.c[0]) || 2050),
+              usd: parseFloat((k.XETHZUSD == null ? undefined : k.XETHZUSD.c[0]) || 2650),
+              eur: parseFloat((k.XETHZEUR == null ? undefined : k.XETHZEUR.c[0]) || 2450),
               gbp_24h_change: -0.5,
               usd_24h_change: -0.3
             },
             solana: {
-              gbp: parseFloat(k.SOLGBP?.c[0] || 120),
-              usd: parseFloat(k.SOLUSD?.c[0] || 155),
-              eur: parseFloat(k.SOLEUR?.c[0] || 140),
+              gbp: parseFloat((k.SOLGBP == null ? undefined : k.SOLGBP.c[0]) || 120),
+              usd: parseFloat((k.SOLUSD == null ? undefined : k.SOLUSD.c[0]) || 155),
+              eur: parseFloat((k.SOLEUR == null ? undefined : k.SOLEUR.c[0]) || 140),
               gbp_24h_change: 3.4,
               usd_24h_change: 3.6
             },
             ripple: {
-              gbp: parseFloat(k.XXRPZGBP?.c[0] || 0.42),
-              usd: parseFloat(k.XXRPZUSD?.c[0] || 0.55),
-              eur: parseFloat(k.XXRPZEUR?.c[0] || 0.50),
+              gbp: parseFloat((k.XXRPZGBP == null ? undefined : k.XXRPZGBP.c[0]) || 0.42),
+              usd: parseFloat((k.XXRPZUSD == null ? undefined : k.XXRPZUSD.c[0]) || 0.55),
+              eur: parseFloat((k.XXRPZEUR == null ? undefined : k.XXRPZEUR.c[0]) || 0.50),
               gbp_24h_change: 0.8,
               usd_24h_change: 1.0
             },
             dogecoin: {
-              gbp: parseFloat(k.XDGUSD?.c[0] || 0.12) * 0.77,
-              usd: parseFloat(k.XDGUSD?.c[0] || 0.12),
-              eur: parseFloat(k.XDGUSD?.c[0] || 0.12) * 0.92,
+              gbp: parseFloat((k.XDGUSD == null ? undefined : k.XDGUSD.c[0]) || 0.12) * 0.77,
+              usd: parseFloat((k.XDGUSD == null ? undefined : k.XDGUSD.c[0]) || 0.12),
+              eur: parseFloat((k.XDGUSD == null ? undefined : k.XDGUSD.c[0]) || 0.12) * 0.92,
               gbp_24h_change: 2.1,
               usd_24h_change: 2.3
             },
             cardano: {
-              gbp: parseFloat(k.ADAGBP?.c[0] || 0.28),
-              usd: parseFloat(k.ADAUSD?.c[0] || 0.36),
-              eur: parseFloat(k.ADAEUR?.c[0] || 0.33),
+              gbp: parseFloat((k.ADAGBP == null ? undefined : k.ADAGBP.c[0]) || 0.28),
+              usd: parseFloat((k.ADAUSD == null ? undefined : k.ADAUSD.c[0]) || 0.36),
+              eur: parseFloat((k.ADAEUR == null ? undefined : k.ADAEUR.c[0]) || 0.33),
               gbp_24h_change: -1.1,
               usd_24h_change: -0.9
             }

@@ -121,8 +121,8 @@
       const overlay = document.getElementById('nexus-modal-overlay');
       const closeBtn = document.getElementById('modal-close-btn');
 
-      closeBtn?.addEventListener('click', () => this.closeModal());
-      overlay?.addEventListener('click', (e) => {
+      closeBtn && closeBtn.addEventListener('click', () => this.closeModal());
+      overlay && overlay.addEventListener('click', (e) => {
         if (e.target === overlay) this.closeModal();
       });
 
@@ -155,16 +155,11 @@
 
     /* 5. Touch Gestures & Kiosk Optimizations */
     initTouchGestures() {
-      // Prevent browser default pull-to-refresh or unwanted navigation bounce
-      document.body.addEventListener('touchmove', (e) => {
-        const isScrollable = e.target.closest('.nexus-main, .modal-body, .news-scroll-container, .todo-items-list, .sw-laps-box');
-        if (!isScrollable) {
-          e.preventDefault();
-        }
-      }, { passive: false });
+      // Let WebView handle native scrolling, including the horizontal dock.
+      // Cancelling body touchmove prevents navigation to off-screen dock items.
 
       // Brand logo tap returns to Overview
-      document.getElementById('brand-logo-btn')?.addEventListener('click', () => {
+      document.getElementById('brand-logo-btn') && document.getElementById('brand-logo-btn').addEventListener('click', () => {
         this.switchView('overview');
       });
     }

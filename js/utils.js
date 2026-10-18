@@ -214,8 +214,8 @@
         } else if (docEl.webkitRequestFullscreen) {
           docEl.webkitRequestFullscreen();
         }
-        document.getElementById('fs-enter-icon')?.classList.add('hidden');
-        document.getElementById('fs-exit-icon')?.classList.remove('hidden');
+        document.getElementById('fs-enter-icon') && document.getElementById('fs-enter-icon').classList.add('hidden');
+        document.getElementById('fs-exit-icon') && document.getElementById('fs-exit-icon').classList.remove('hidden');
         this.showToast('Fullscreen Mode Active');
       } else {
         if (document.exitFullscreen) {
@@ -223,8 +223,8 @@
         } else if (document.webkitExitFullscreen) {
           document.webkitExitFullscreen();
         }
-        document.getElementById('fs-enter-icon')?.classList.remove('hidden');
-        document.getElementById('fs-exit-icon')?.classList.add('hidden');
+        document.getElementById('fs-enter-icon') && document.getElementById('fs-enter-icon').classList.remove('hidden');
+        document.getElementById('fs-exit-icon') && document.getElementById('fs-exit-icon').classList.add('hidden');
         this.showToast('Exited Fullscreen');
       }
     },
